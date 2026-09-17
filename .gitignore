@@ -57,6 +57,9 @@ Thumbs.db
 
 # ignore Secrets folder
 .secrets/
+secrets/
+.env.production
+.env.production.local
 libraries/plugins/src/plugins.ts
 i18n.cache
 

@@ -1,0 +1,158 @@
+# Production deployment for viralz.online.
+# Builds the app image from local source (var/docker Dockerfile.dev, "dist" target)
+# instead of pulling the upstream ghcr.io/gitroomhq/postiz-app image, so the
+# rebranded Viralz code actually ships.
+#
+# The app container binds to 127.0.0.1 only - Caddy (see deploy/Caddyfile) is the
+# public-facing reverse proxy that terminates TLS for viralz.online.
+services:
+  viralz:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: viralz
+    restart: always
+    env_file:
+      - .env.production
+    volumes:
+      - viralz-config:/config/
+      - viralz-uploads:/uploads/
+    ports:
+      - '127.0.0.1:4007:5000'
+    networks:
+      - viralz-network
+      - temporal-network
+    depends_on:
+      viralz-postgres:
+        condition: service_healthy
+      viralz-redis:
+        condition: service_healthy
+
+  viralz-postgres:
+    image: postgres:17-alpine
+    container_name: viralz-postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      POSTGRES_USER: viralz-user
+      POSTGRES_DB: viralz-db
+    secrets:
+      - postgres_password
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+    networks:
+      - viralz-network
+    healthcheck:
+      test: pg_isready -U viralz-user -d viralz-db
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  viralz-redis:
+    image: redis:7.2
+    container_name: viralz-redis
+    restart: always
+    healthcheck:
+      test: redis-cli ping
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    volumes:
+      - viralz-redis-data:/data
+    networks:
+      - viralz-network
+
+  # -----------------------
+  # Temporal Stack
+  # -----------------------
+  temporal-elasticsearch:
+    container_name: temporal-elasticsearch
+    image: elasticsearch:7.17.27
+    restart: always
+    environment:
+      - cluster.routing.allocation.disk.threshold_enabled=true
+      - cluster.routing.allocation.disk.watermark.low=512mb
+      - cluster.routing.allocation.disk.watermark.high=256mb
+      - cluster.routing.allocation.disk.watermark.flood_stage=128mb
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms256m -Xmx256m
+      - xpack.security.enabled=false
+    networks:
+      - temporal-network
+    expose:
+      - 9200
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+
+  temporal-postgresql:
+    container_name: temporal-postgresql
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/temporal_postgres_password
+      POSTGRES_USER: temporal
+    secrets:
+      - temporal_postgres_password
+    networks:
+      - temporal-network
+    expose:
+      - 5432
+    volumes:
+      - temporal-postgres-data:/var/lib/postgresql/data
+
+  temporal:
+    container_name: temporal
+    restart: always
+    image: temporalio/auto-setup:1.28.1
+    depends_on:
+      - temporal-postgresql
+      - temporal-elasticsearch
+    environment:
+      - DB=postgres12
+      - DB_PORT=5432
+      - POSTGRES_USER=temporal
+      - POSTGRES_PWD=${TEMPORAL_PG_PASSWORD}
+      - POSTGRES_SEEDS=temporal-postgresql
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development-sql.yaml
+      - ENABLE_ES=true
+      - ES_SEEDS=temporal-elasticsearch
+      - ES_VERSION=v7
+      - TEMPORAL_NAMESPACE=default
+    networks:
+      - temporal-network
+    volumes:
+      - ./dynamicconfig:/etc/temporal/config/dynamicconfig
+
+  temporal-ui:
+    container_name: temporal-ui
+    image: temporalio/ui:2.34.0
+    restart: always
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CORS_ORIGINS=https://viralz.online
+    networks:
+      - temporal-network
+    ports:
+      # Bound to loopback only - reach it via `ssh -L 8080:localhost:8080` rather
+      # than exposing the workflow inspector to the public internet.
+      - '127.0.0.1:8080:8080'
+
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+  temporal_postgres_password:
+    file: ./secrets/temporal_postgres_password.txt
+
+volumes:
+  postgres-volume:
+  viralz-redis-data:
+  viralz-config:
+  viralz-uploads:
+  temporal-postgres-data:
+  es-data:
+
+networks:
+  viralz-network:
+  temporal-network:
+    driver: bridge
+    name: temporal-network
