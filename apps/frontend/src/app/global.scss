@@ -595,7 +595,7 @@ html[dir='rtl'] [dir='ltr'] {
 
 .ProseMirror .mention {
   font-weight: bold;
-  color: #ae8afc;
+  color: #fdba74;
 }
 
 .ProseMirror ul,
@@ -698,7 +698,7 @@ html[dir='rtl'] [dir='ltr'] {
     background-color: var(--purple-light);
     border-radius: 0.4rem;
     box-decoration-break: clone;
-    color: #ae8afc;
+    color: #fdba74;
     &::after {
       content: '\200B';
     }
@@ -800,6 +800,20 @@ html[dir='rtl'] [dir='ltr'] {
 .w8-max {
   width: calc(100% / 6);
   max-width: calc(100% / 6);
+}
+
+@media (max-width: 1025px) {
+  .w8-max {
+    width: calc(100% / 4);
+    max-width: calc(100% / 4);
+  }
+}
+
+@media (max-width: 600px) {
+  .w8-max {
+    width: calc(100% / 3);
+    max-width: calc(100% / 3);
+  }
 }
 
 .withp3 {

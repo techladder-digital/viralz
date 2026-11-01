@@ -63,7 +63,7 @@ export default async function Auth(
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
-                      <rect width="60" height="60" rx="16" fill="#612BD3" />
+                      <rect width="60" height="60" rx="16" fill="#F97316" />
                       <path d="M16 16L30 44L44 16H37.5L30 31.5L22.5 16H16Z" fill="white" />
                     </svg>
                   </div>

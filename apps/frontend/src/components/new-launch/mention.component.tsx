@@ -95,7 +95,7 @@ const MentionList: FC = (props: any) => {
           props?.items?.map((item: any, index: any) => (
             <button
               className={`flex gap-[10px] w-full p-2 text-start rounded hover:bg-gray-100 ${
-                index === selectedIndex ? 'bg-blue-100' : ''
+                index === selectedIndex ? 'bg-orange-100' : ''
               }`}
               key={item.id || index}
               onClick={() => selectItem(index)}

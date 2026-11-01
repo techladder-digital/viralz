@@ -20,7 +20,7 @@ interface Announcement {
 }
 
 const colorStyles: Record<AnnouncementColor, { bg: string; hover: string }> = {
-  INFO: { bg: 'bg-blue-600', hover: 'hover:bg-blue-500' },
+  INFO: { bg: 'bg-orange-600', hover: 'hover:bg-orange-500' },
   WARNING: { bg: 'bg-amber-600', hover: 'hover:bg-amber-500' },
   ERROR: { bg: 'bg-red-600', hover: 'hover:bg-red-500' },
 };

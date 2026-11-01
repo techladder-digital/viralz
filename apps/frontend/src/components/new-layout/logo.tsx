@@ -10,7 +10,7 @@ export const Logo = () => {
       fill="none"
       className="mt-[8px] min-w-[60px] min-h-[60px]"
     >
-      <rect width="60" height="60" rx="16" fill="#612BD3" />
+      <rect width="60" height="60" rx="16" fill="#F97316" />
       <path
         d="M16 16L30 44L44 16H37.5L30 31.5L22.5 16H16Z"
         fill="white"
