@@ -303,6 +303,12 @@ export class IntegrationService {
     integration: Integration,
     err = ''
   ) {
+    // a deleted channel has no tokens left, so lookups that still reach it fail
+    // to refresh; the user removed it on purpose and needs no warning
+    if (integration.deletedAt) {
+      return;
+    }
+
     await this._notificationService.inAppNotification(
       orgId,
       `Could not refresh your ${integration.providerIdentifier} channel ${err}`,
