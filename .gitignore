@@ -60,6 +60,8 @@ Thumbs.db
 secrets/
 .env.production
 .env.production.local
+# database dumps written by deploy/deploy.sh
+backups/
 libraries/plugins/src/plugins.ts
 i18n.cache
 
