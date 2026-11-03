@@ -88,4 +88,9 @@ export default withProvider({
   CustomPreviewComponent: YoutubePreview,
   dto: YoutubeSettingsDto,
   maximumCharacters: 5000,
+  // YouTube decides on its own that a short vertical video is a Short
+  formats: {
+    short: { label: 'Short' },
+    long: { label: 'Video' },
+  },
 });

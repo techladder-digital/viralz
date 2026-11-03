@@ -761,5 +761,21 @@
   "republish_the_post": "Republish the post",
   "post_already_published_republish_warning": "This post was already published. Republishing will publish it again to",
   "republish_at": "at",
-  "republish_recurring_note": "This is a recurring post: your changes apply to all future recurrences starting now."
+  "republish_recurring_note": "This is a recurring post: your changes apply to all future recurrences starting now.",
+  "post_format_title": "What are you posting?",
+  "post_format_short": "Short video",
+  "post_format_short_hint": "Reels and Shorts",
+  "post_format_long": "Long video",
+  "post_format_long_hint": "Full videos",
+  "post_format_photo": "Photo or text",
+  "post_format_photo_hint": "Feed posts",
+  "post_format_story": "Story",
+  "post_format_story_hint": "Gone in 24 hours",
+  "post_format_video_is": "Your video is",
+  "post_format_vertical": "vertical",
+  "post_format_horizontal": "horizontal",
+  "post_format_best_as": "It works best as:",
+  "post_format_use": "Use this",
+  "post_format_goes_as_post": "Post",
+  "post_format_not_supported": "does not have this post type. Unselect it or choose another type."
 }

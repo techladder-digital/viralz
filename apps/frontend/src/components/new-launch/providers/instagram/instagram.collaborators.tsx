@@ -118,5 +118,11 @@ export default withProvider<InstagramDto>({
   CustomPreviewComponent: InstagramPreview,
   dto: InstagramDto,
   maximumCharacters: 2200,
-  comments: 'no-media'
+  comments: 'no-media',
+  formats: {
+    short: { label: 'Reel', settings: { post_type: 'post' } },
+    long: { label: 'Reel', settings: { post_type: 'post' } },
+    photo: { label: 'Post', settings: { post_type: 'post' } },
+    story: { label: 'Story', settings: { post_type: 'story' } },
+  },
 });

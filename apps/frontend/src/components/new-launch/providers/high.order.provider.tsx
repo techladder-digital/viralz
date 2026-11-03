@@ -11,7 +11,10 @@ import React, {
 import { useForm, FormProvider } from 'react-hook-form';
 import { IsOptional } from 'class-validator';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
-import { useLaunchStore } from '@gitroom/frontend/components/new-launch/store';
+import {
+  ProviderFormats,
+  useLaunchStore,
+} from '@gitroom/frontend/components/new-launch/store';
 import { useShallow } from 'zustand/react/shallow';
 import { GeneralPreviewComponent } from '@gitroom/frontend/components/launches/general.preview.component';
 import { IntegrationContext } from '@gitroom/frontend/components/launches/helpers/use.integration';
@@ -49,6 +52,7 @@ export const withProvider = function <T extends object>(params: {
   }>;
   dto?: any;
   maximumCharacters?: number | ((settings: any) => number);
+  formats?: ProviderFormats;
 }) {
   const {
     postComment,
@@ -79,6 +83,9 @@ export const withProvider = function <T extends object>(params: {
       setChars,
       setComments,
       setHide,
+      postFormat,
+      setPostFormat,
+      setProviderFormats,
     } = useLaunchStore(
       useShallow((state) => ({
         date: state.date,
@@ -88,6 +95,9 @@ export const withProvider = function <T extends object>(params: {
         internal: state.internal.find((p) => p.integration.id === props.id),
         integrations: state.selectedIntegrations,
         setHide: state.setHide,
+        postFormat: state.postFormat,
+        setPostFormat: state.setPostFormat,
+        setProviderFormats: state.setProviderFormats,
         allIntegrations: state.integrations,
         justCurrent: state.current,
         current: state.current === props.id,
@@ -177,6 +187,27 @@ export const withProvider = function <T extends object>(params: {
       criteriaMode: 'all',
       reValidateMode: 'onChange',
     });
+
+    useEffect(() => {
+      setProviderFormats(props.id, params.formats);
+    }, [props.id]);
+
+    useEffect(() => {
+      const settings = postFormat && params.formats?.[postFormat]?.settings;
+      if (!settings) {
+        return;
+      }
+      Object.entries(settings).forEach(([key, value]) => {
+        form.setValue(key as any, value as any);
+      });
+      // Changing one of these by hand means the picker no longer describes the post
+      const subscription = form.watch((_, { name, type }) => {
+        if (type === 'change' && name && name in settings) {
+          setPostFormat(null);
+        }
+      });
+      return () => subscription.unsubscribe();
+    }, [postFormat]);
 
     useImperativeHandle(
       ref,

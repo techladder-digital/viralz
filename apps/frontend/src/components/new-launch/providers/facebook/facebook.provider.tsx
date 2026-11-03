@@ -124,4 +124,10 @@ export default withProvider<FacebookDto>({
   CustomPreviewComponent: FacebookPreview,
   dto: FacebookDto,
   maximumCharacters: 63206,
+  formats: {
+    short: { label: 'Video post', settings: { post_type: 'post' } },
+    long: { label: 'Video post', settings: { post_type: 'post' } },
+    photo: { label: 'Post', settings: { post_type: 'post' } },
+    story: { label: 'Story', settings: { post_type: 'story' } },
+  },
 });
