@@ -131,6 +131,25 @@ export class UsersService {
     return this._usersRepository.activateUser(id);
   }
 
+  // A name the user set in Viralz is never overwritten by the login provider
+  async updateProviderProfile(
+    user: { id: string; name: string | null; providerPicture: string | null },
+    provider: { name?: string; picture?: string }
+  ) {
+    const name = !user.name ? provider.name : undefined;
+    const providerPicture =
+      provider.picture !== user.providerPicture ? provider.picture : undefined;
+
+    if (!name && !providerPicture) {
+      return;
+    }
+
+    await this._usersRepository.updateProviderProfile(user.id, {
+      name,
+      providerPicture,
+    });
+  }
+
   updatePassword(id: string, password: string) {
     return this._usersRepository.updatePassword(id, password);
   }

@@ -122,14 +122,16 @@ export function Login() {
                   <p className="text-amber-400 text-sm mb-2">
                     {t(
                       'account_not_activated',
-                      'Your account is not activated yet. Please check your email for the activation link.'
+                      'Your email is not verified yet. Enter the code we sent you to continue.'
                     )}
                   </p>
                   <Link
-                    href="/auth/activate"
+                    href={`/auth/activate?email=${encodeURIComponent(
+                      form.getValues('email') || ''
+                    )}`}
                     className="text-amber-400 underline hover:font-bold text-sm"
                   >
-                    {t('resend_activation_email', 'Resend Activation Email')}
+                    {t('verify_email', 'Verify email')}
                   </Link>
                 </div>
               )}

@@ -74,6 +74,7 @@ export const SettingsPopup: FC<{
       method: 'POST',
       body: JSON.stringify(val),
     });
+    swr.mutate('user-menu-personal');
     if (getRef) {
       return;
     }

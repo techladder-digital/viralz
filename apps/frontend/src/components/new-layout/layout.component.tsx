@@ -34,6 +34,7 @@ import { Impersonate } from '@gitroom/frontend/components/layout/impersonate';
 import { AnnouncementBanner } from '@gitroom/frontend/components/layout/announcement.banner';
 import { Title } from '@gitroom/frontend/components/layout/title';
 import { TopMenu } from '@gitroom/frontend/components/layout/top.menu';
+import { UserMenu } from '@gitroom/frontend/components/layout/user.menu';
 import { LanguageComponent } from '@gitroom/frontend/components/layout/language.component';
 import { ChromeExtensionComponent } from '@gitroom/frontend/components/layout/chrome.extension.component';
 import NotificationComponent from '@gitroom/frontend/components/notifications/notification.component';
@@ -189,6 +190,8 @@ export const LayoutComponent = ({ children }: { children: ReactNode }) => {
                             <AttachToFeedbackIcon />
                           </div>
                           <NotificationComponent />
+                          <div className="w-[1px] h-[20px] bg-blockSeparator mobile:hidden" />
+                          <UserMenu />
                         </div>
                       </div>
                       <div className="flex flex-1 gap-[1px] min-w-0 mobile:flex-col">

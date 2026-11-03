@@ -89,6 +89,7 @@ model User {
   bio                   String?
   audience              Int                  @default(0)
   pictureId             String?
+  providerPicture       String?
   providerId            String?
   timezone              Int
   createdAt             DateTime             @default(now())
