@@ -44,8 +44,13 @@ export function useUppyUploader(props: {
 }) {
   const setLocked = useLaunchStore((state) => state.setLocked);
   const toast = useToaster();
-  const { storageProvider, backendUrl, disableImageCompression, transloadit } =
-    useVariables();
+  const {
+    storageProvider,
+    backendUrl,
+    disableImageCompression,
+    transloadit,
+    isSecured,
+  } = useVariables();
   const { onUploadSuccess, allowedFileTypes } = props;
   const fetch = useFetch();
   return useMemo(() => {
@@ -171,7 +176,8 @@ export function useUppyUploader(props: {
       transloadit.length > 0 ? 'transloadit' : storageProvider,
       fetch,
       backendUrl,
-      transloadit
+      transloadit,
+      isSecured
     );
 
     uppy2.use(plugin, options);
