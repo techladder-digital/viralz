@@ -66,8 +66,28 @@ export class MediaService {
     return this._mediaRepository.saveFile(org, fileName, filePath, originalName);
   }
 
-  getMedia(org: string, page: number, search?: string) {
-    return this._mediaRepository.getMedia(org, page, search);
+  getMedia(org: string, page: number, search?: string, folderId?: string) {
+    return this._mediaRepository.getMedia(org, page, search, folderId);
+  }
+
+  getFolders(org: string) {
+    return this._mediaRepository.getFolders(org);
+  }
+
+  createFolder(org: string, name: string) {
+    return this._mediaRepository.createFolder(org, name.trim());
+  }
+
+  deleteFolder(org: string, id: string) {
+    return this._mediaRepository.deleteFolder(org, id);
+  }
+
+  async moveMedia(org: string, ids: string[], folderId?: string | null) {
+    if (folderId && !(await this._mediaRepository.getFolder(org, folderId))) {
+      throw new HttpException('Folder not found', 404);
+    }
+
+    return this._mediaRepository.moveMedia(org, ids, folderId || null);
   }
 
   saveMediaInformation(org: string, data: SaveMediaInformationDto) {

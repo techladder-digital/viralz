@@ -4,7 +4,86 @@ import { SaveMediaInformationDto } from '@gitroom/nestjs-libraries/dtos/media/sa
 
 @Injectable()
 export class MediaRepository {
-  constructor(private _media: PrismaRepository<'media'>) {}
+  constructor(
+    private _media: PrismaRepository<'media'>,
+    private _mediaFolder: PrismaRepository<'mediaFolder'>
+  ) {}
+
+  getFolders(org: string) {
+    return this._mediaFolder.model.mediaFolder.findMany({
+      where: {
+        organizationId: org,
+        deletedAt: null,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+  }
+
+  getFolder(org: string, id: string) {
+    return this._mediaFolder.model.mediaFolder.findFirst({
+      where: {
+        id,
+        organizationId: org,
+        deletedAt: null,
+      },
+    });
+  }
+
+  createFolder(org: string, name: string) {
+    return this._mediaFolder.model.mediaFolder.create({
+      data: {
+        organizationId: org,
+        name,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+  }
+
+  async deleteFolder(org: string, id: string) {
+    await this._media.model.media.updateMany({
+      where: {
+        folderId: id,
+        organizationId: org,
+      },
+      data: {
+        folderId: null,
+      },
+    });
+
+    return this._mediaFolder.model.mediaFolder.updateMany({
+      where: {
+        id,
+        organizationId: org,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
+
+  moveMedia(org: string, ids: string[], folderId: string | null) {
+    return this._media.model.media.updateMany({
+      where: {
+        id: {
+          in: ids,
+        },
+        organizationId: org,
+        deletedAt: null,
+      },
+      data: {
+        folderId,
+      },
+    });
+  }
 
   saveFile(org: string, fileName: string, filePath: string, originalName?: string) {
     return this._media.model.media.create({
@@ -72,7 +151,7 @@ export class MediaRepository {
     });
   }
 
-  async getMedia(org: string, page: number, search?: string) {
+  async getMedia(org: string, page: number, search?: string, folderId?: string) {
     const pageNum = (page || 1) - 1;
     const trimmedSearch = search?.trim();
     const searchFilter = trimmedSearch
@@ -83,6 +162,7 @@ export class MediaRepository {
           },
         }
       : {};
+    const folderFilter = folderId ? { folderId } : {};
     const query = {
       where: {
         organization: {
@@ -90,6 +170,7 @@ export class MediaRepository {
         },
         deletedAt: null,
         ...searchFilter,
+        ...folderFilter,
       },
     };
     const pages = Math.ceil((await this._media.model.media.count(query)) / 18);
@@ -98,6 +179,7 @@ export class MediaRepository {
         organizationId: org,
         deletedAt: null,
         ...searchFilter,
+        ...folderFilter,
       },
       orderBy: {
         createdAt: 'desc',
@@ -110,6 +192,7 @@ export class MediaRepository {
         thumbnail: true,
         alt: true,
         thumbnailTimestamp: true,
+        folderId: true,
       },
       skip: pageNum * 18,
       take: 18,
