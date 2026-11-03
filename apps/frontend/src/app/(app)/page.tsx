@@ -5,32 +5,16 @@ import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { getT } from '@gitroom/react/translation/get.translation.service.backend';
 import { LogoTextComponent } from '@gitroom/frontend/components/ui/logo-text.component';
+import { LandingHero } from '@gitroom/frontend/components/landing/landing.hero';
 
 export const metadata: Metadata = {
-  title: 'Viralz: schedule your social media posts',
+  title: 'Viralz: write once, post everywhere',
   description:
     'Write a post once, choose your channels and a time. Viralz publishes it for you on YouTube, Instagram, Facebook and more.',
 };
 
 const focusRing =
   'focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-[3px] focus-visible:outline-current';
-
-// Sample week for the hero board. It shows what the calendar looks like, not real data.
-const week: { day: string; posts: { time: string; title: string; channels: string[] }[] }[] = [
-  { day: 'Mon', posts: [{ time: '9:00 AM', title: 'New recipe video', channels: ['youtube', 'facebook'] }] },
-  { day: 'Tue', posts: [{ time: '6:30 PM', title: 'Behind the scenes', channels: ['instagram'] }] },
-  { day: 'Wed', posts: [] },
-  {
-    day: 'Thu',
-    posts: [
-      { time: '8:00 AM', title: 'Weekly tips', channels: ['linkedin', 'x'] },
-      { time: '7:00 PM', title: 'Short reel', channels: ['instagram', 'tiktok', 'youtube'] },
-    ],
-  },
-  { day: 'Fri', posts: [{ time: '12:30 PM', title: 'Customer story', channels: ['facebook', 'linkedin'] }] },
-  { day: 'Sat', posts: [{ time: '10:00 AM', title: 'Weekend offer', channels: ['instagram', 'facebook', 'pinterest'] }] },
-  { day: 'Sun', posts: [] },
-];
 
 const platforms = [
   ['youtube', 'YouTube'],
@@ -46,6 +30,29 @@ const platforms = [
   ['discord', 'Discord'],
   ['bluesky', 'Bluesky'],
 ];
+
+const PlatformRow = ({ hidden }: { hidden?: boolean }) => (
+  <ul
+    aria-hidden={hidden}
+    className="flex shrink-0 items-center gap-[44px] pe-[44px] py-[22px]"
+  >
+    {platforms.map(([icon, name]) => (
+      <li
+        key={icon}
+        className="flex items-center gap-[12px] text-[24px] font-[600] whitespace-nowrap"
+      >
+        <img
+          src={`/icons/platforms/${icon}.png`}
+          alt=""
+          width={36}
+          height={36}
+          className="rounded-[9px]"
+        />
+        {name}
+      </li>
+    ))}
+  </ul>
+);
 
 export default async function LandingPage() {
   const t = await getT();
@@ -72,13 +79,44 @@ export default async function LandingPage() {
       title: t('landing_step_schedule', 'Pick a time'),
       text: t(
         'landing_step_schedule_text',
-        'Your post goes on the calendar and is published at that time, even when your computer is off.'
+        'Your post goes on the calendar and is published at that time.'
+      ),
+    },
+  ];
+
+  const features = [
+    {
+      title: t('landing_feature_calendar', 'See your whole month'),
+      text: t(
+        'landing_feature_calendar_text',
+        'Every post on every channel, in one calendar. Drag a post to move it.'
+      ),
+    },
+    {
+      title: t('landing_feature_analytics', 'Find out what worked'),
+      text: t(
+        'landing_feature_analytics_text',
+        'Check how your channels and posts are doing without opening each app.'
+      ),
+    },
+    {
+      title: t('landing_feature_team', 'Work with your team'),
+      text: t(
+        'landing_feature_team_text',
+        'Invite people to your workspace and plan posts together.'
+      ),
+    },
+    {
+      title: t('landing_feature_media', 'Keep your media in one place'),
+      text: t(
+        'landing_feature_media_text',
+        'Upload photos and videos once, then use them in any post.'
       ),
     },
   ];
 
   return (
-    <div className="min-h-screen w-full bg-[#F97316] text-[#1F0E03]">
+    <div className="min-h-screen w-full bg-[#F97316] text-[#1F0E03] overflow-x-hidden">
       <header className="bg-[#1F0E03] text-white">
         <div className="max-w-[1240px] mx-auto px-[32px] mobile:px-[16px] h-[72px] flex items-center justify-between gap-[12px]">
           <Link href="/" className={`rounded-[4px] ${focusRing}`}>
@@ -88,7 +126,7 @@ export default async function LandingPage() {
             {loggedIn ? (
               <Link
                 href={dashboard}
-                className={`h-[42px] px-[18px] flex items-center rounded-[8px] bg-white text-[#1F0E03] hover:bg-[#FFEDD5] ${focusRing}`}
+                className={`h-[42px] px-[18px] flex items-center rounded-[10px] bg-white text-[#1F0E03] hover:bg-[#FFEDD5] ${focusRing}`}
               >
                 {t('landing_go_to_dashboard', 'Go to dashboard')}
               </Link>
@@ -96,13 +134,13 @@ export default async function LandingPage() {
               <>
                 <Link
                   href="/auth/login"
-                  className={`h-[42px] px-[14px] flex items-center rounded-[8px] hover:underline ${focusRing}`}
+                  className={`h-[42px] px-[14px] flex items-center rounded-[10px] hover:underline ${focusRing}`}
                 >
                   {t('sign_in', 'Sign In')}
                 </Link>
                 <Link
                   href="/auth"
-                  className={`h-[42px] px-[18px] flex items-center rounded-[8px] bg-white text-[#1F0E03] hover:bg-[#FFEDD5] ${focusRing}`}
+                  className={`h-[42px] px-[18px] flex items-center rounded-[10px] bg-white text-[#1F0E03] hover:bg-[#FFEDD5] ${focusRing}`}
                 >
                   {t('sign_up', 'Sign Up')}
                 </Link>
@@ -113,103 +151,31 @@ export default async function LandingPage() {
       </header>
 
       <main>
-        <section className="max-w-[1240px] mx-auto px-[32px] mobile:px-[16px] pt-[72px] mobile:pt-[40px]">
-          <h1 className="text-[84px] tablet:text-[64px] mobile:!text-[42px] leading-[1.02] -tracking-[0.03em] font-[600] max-w-[1000px]">
-            {t(
-              'landing_headline',
-              'Plan your week of posts once. Viralz publishes them on time.'
-            )}
-          </h1>
-          <p className="text-[21px] mobile:text-[17px] leading-[1.5] font-[500] max-w-[640px] mt-[28px]">
-            {t(
-              'landing_description',
-              'Write a post, choose your channels and pick a time. Viralz posts it to YouTube, Instagram, Facebook and more, so you do not have to open each app.'
-            )}
-          </p>
-          <div className="flex flex-wrap items-center gap-[12px] mt-[36px]">
-            <Link
-              href={loggedIn ? dashboard : '/auth'}
-              className={`h-[56px] px-[28px] flex items-center rounded-[10px] bg-[#1F0E03] text-white text-[17px] font-[600] hover:bg-black ${focusRing}`}
-            >
-              {loggedIn
-                ? t('landing_go_to_dashboard', 'Go to dashboard')
-                : t('landing_create_account', 'Create your account')}
-            </Link>
-            {!loggedIn && (
-              <Link
-                href="/auth/login"
-                className={`h-[56px] px-[20px] flex items-center rounded-[10px] text-[17px] font-[600] underline underline-offset-4 ${focusRing}`}
-              >
-                {t('landing_have_account', 'I already have an account')}
-              </Link>
-            )}
+        <LandingHero loggedIn={loggedIn} dashboard={dashboard} />
+
+        <section
+          aria-label={t('landing_platforms', 'Platforms you can post to')}
+          className="mt-[56px] mobile:mt-[40px] bg-[#FFF7ED] overflow-hidden"
+        >
+          <div className="flex w-max landing-marquee">
+            <PlatformRow />
+            <PlatformRow hidden />
           </div>
         </section>
 
-        {/* The week board bleeds off the orange into the cream section below it */}
-        <div className="bg-[linear-gradient(to_bottom,#F97316_0,#F97316_50%,#FFF7ED_50%,#FFF7ED_100%)] mt-[64px] mobile:mt-[40px]">
-          <div className="max-w-[1240px] mx-auto px-[32px] mobile:px-[16px]">
-            <div
-              role="img"
-              aria-label={t(
-                'landing_board_label',
-                'Example of a week in the Viralz calendar, with posts scheduled on different days and channels'
-              )}
-              className="bg-[#1F0E03] rounded-[20px] p-[12px] overflow-x-auto"
-            >
-              <div className="grid grid-cols-7 gap-[6px] min-w-[860px]">
-                {week.map(({ day, posts }) => (
-                  <div key={day} className="flex flex-col gap-[6px]">
-                    <div className="text-white/70 text-[14px] font-[600] px-[10px] py-[8px]">
-                      {t(`landing_day_${day.toLowerCase()}`, day)}
-                    </div>
-                    <div className="flex flex-col gap-[6px] min-h-[250px] rounded-[10px] bg-white/[0.06] p-[6px]">
-                      {posts.map((post) => (
-                        <div
-                          key={post.title}
-                          className="bg-[#FFF7ED] rounded-[8px] p-[10px] flex flex-col gap-[8px]"
-                        >
-                          <div className="text-[12px] font-[600] text-[#9A3412]">
-                            {post.time}
-                          </div>
-                          <div className="text-[14px] font-[600] leading-[1.25]">
-                            {post.title}
-                          </div>
-                          <div className="flex gap-[4px]">
-                            {post.channels.map((channel) => (
-                              <img
-                                key={channel}
-                                src={`/icons/platforms/${channel}.png`}
-                                alt=""
-                                width={22}
-                                height={22}
-                                className="rounded-[5px]"
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div className="bg-[#FFF7ED]">
-          <section className="max-w-[1240px] mx-auto px-[32px] mobile:px-[16px] pt-[88px] mobile:pt-[56px]">
-            <h2 className="text-[40px] mobile:text-[30px] leading-[1.1] -tracking-[0.02em] font-[600]">
-              {t('landing_how_it_works', 'How it works')}
+          <section className="max-w-[1240px] mx-auto px-[32px] mobile:px-[16px] pt-[64px] mobile:pt-[44px]">
+            <h2 className="text-[56px] mobile:text-[36px] leading-[1.05] -tracking-[0.03em] font-[600]">
+              {t('landing_how_it_works', 'Three steps, then it runs itself')}
             </h2>
-            <ol className="grid grid-cols-3 mobile:grid-cols-1 gap-[40px] mobile:gap-[28px] mt-[36px]">
+            <ol className="grid grid-cols-3 mobile:grid-cols-1 gap-[40px] mobile:gap-[28px] mt-[40px]">
               {steps.map((step, index) => (
                 <li key={step.title} className="flex flex-col gap-[10px]">
-                  <span className="text-[56px] leading-none font-[600] text-[#EA580C]">
+                  <span className="text-[72px] leading-none font-[600] text-[#EA580C]">
                     {index + 1}
                   </span>
-                  <h3 className="text-[21px] font-[600]">{step.title}</h3>
-                  <p className="text-[16px] leading-[1.55] font-[500] text-[#5C3A21] max-w-[360px]">
+                  <h3 className="text-[23px] font-[600]">{step.title}</h3>
+                  <p className="text-[17px] leading-[1.5] font-[500] text-[#5C3A21] max-w-[360px]">
                     {step.text}
                   </p>
                 </li>
@@ -217,26 +183,39 @@ export default async function LandingPage() {
             </ol>
           </section>
 
-          <section className="max-w-[1240px] mx-auto px-[32px] mobile:px-[16px] py-[88px] mobile:py-[56px]">
-            <h2 className="text-[40px] mobile:text-[30px] leading-[1.1] -tracking-[0.02em] font-[600]">
-              {t('landing_platforms', 'Post to the platforms you use')}
+          <section className="max-w-[1240px] mx-auto px-[32px] mobile:px-[16px] py-[88px] mobile:py-[56px] grid grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] mobile:grid-cols-1 gap-[48px] mobile:gap-[24px]">
+            <h2 className="text-[56px] mobile:text-[36px] leading-[1.05] -tracking-[0.03em] font-[600]">
+              {t('landing_features', 'Everything in one place')}
             </h2>
-            <ul className="flex flex-wrap gap-x-[28px] gap-y-[16px] mt-[32px]">
-              {platforms.map(([icon, name]) => (
-                <li key={icon} className="flex items-center gap-[10px] text-[17px] font-[600]">
-                  <img
-                    src={`/icons/platforms/${icon}.png`}
-                    alt=""
-                    width={30}
-                    height={30}
-                    className="rounded-[7px]"
-                  />
-                  {name}
+            <ul className="flex flex-col">
+              {features.map((feature) => (
+                <li
+                  key={feature.title}
+                  className="py-[22px] border-t-2 border-[#1F0E03] last:border-b-2"
+                >
+                  <h3 className="text-[23px] font-[600]">{feature.title}</h3>
+                  <p className="text-[17px] leading-[1.5] font-[500] text-[#5C3A21] mt-[4px]">
+                    {feature.text}
+                  </p>
                 </li>
               ))}
             </ul>
           </section>
         </div>
+
+        <section className="max-w-[1240px] mx-auto px-[32px] mobile:px-[16px] py-[96px] mobile:py-[64px]">
+          <h2 className="text-[92px] tablet:text-[68px] mobile:!text-[46px] leading-[0.98] -tracking-[0.04em] font-[600] max-w-[960px]">
+            {t('landing_cta', 'Your next post is one click away.')}
+          </h2>
+          <Link
+            href={loggedIn ? dashboard : '/auth'}
+            className={`inline-flex h-[62px] px-[34px] mt-[36px] items-center rounded-[14px] bg-[#1F0E03] text-white text-[18px] font-[600] transition-transform hover:-translate-y-[2px] motion-reduce:transform-none ${focusRing}`}
+          >
+            {loggedIn
+              ? t('landing_go_to_dashboard', 'Go to dashboard')
+              : t('landing_create_account', 'Create your account')}
+          </Link>
+        </section>
       </main>
 
       <footer className="bg-[#1F0E03] text-white/80">

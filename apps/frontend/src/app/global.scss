@@ -816,6 +816,34 @@ html[dir='rtl'] [dir='ltr'] {
   }
 }
 
+@keyframes landingMarquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes landingPop {
+  from {
+    opacity: 0;
+    transform: translateY(-18px) scale(0.9);
+  }
+}
+
+.landing-marquee {
+  animation: landingMarquee 40s linear infinite;
+}
+
+.landing-pop {
+  animation: landingPop 0.35s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-marquee,
+  .landing-pop {
+    animation: none;
+  }
+}
+
 .withp3 {
   width: calc(100% + 9px);
   height: calc(100% + 6px);
