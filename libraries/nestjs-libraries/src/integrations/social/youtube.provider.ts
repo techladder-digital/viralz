@@ -795,20 +795,29 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
       client.setCredentials({ access_token: accessToken });
       const youtubeClient = youtube(client);
 
-      await this.runInConcurrent(async () =>
-        youtubeClient.thumbnails.set({
-          videoId,
-          media: {
-            body: (
-              await this.getSsrfSafeAxios()({
-                url: pendingData.thumbnail,
-                method: 'GET',
-                responseType: 'stream',
-              })
-            ).data,
-          },
-        })
-      );
+      // the video already exists on the channel: failing here would mark a
+      // published video as failed and invite a duplicate upload
+      try {
+        await this.runInConcurrent(async () =>
+          youtubeClient.thumbnails.set({
+            videoId,
+            media: {
+              body: (
+                await this.getSsrfSafeAxios()({
+                  url: pendingData.thumbnail,
+                  method: 'GET',
+                  responseType: 'stream',
+                })
+              ).data,
+            },
+          })
+        );
+      } catch (err) {
+        console.warn(
+          `YouTube thumbnail was not set for video ${videoId}:`,
+          (err as any)?.message
+        );
+      }
     }
 
     return {
