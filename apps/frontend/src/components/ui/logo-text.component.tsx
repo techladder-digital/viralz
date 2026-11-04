@@ -9,7 +9,7 @@ export const LogoTextComponent = () => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <rect width="20" height="22" x={0} y={6} fill="#612BD3" rx={4} />
+      <rect width="20" height="22" x={0} y={6} fill="#F97316" rx={4} />
       <path
         d="M6 12L10 22L14 12H11.2L10 16L8.8 12H6Z"
         fill="white"

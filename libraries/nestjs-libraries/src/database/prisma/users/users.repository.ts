@@ -162,6 +162,18 @@ export class UsersRepository {
     });
   }
 
+  updateProviderProfile(
+    id: string,
+    profile: { name?: string; providerPicture?: string }
+  ) {
+    return this._user.model.user.update({
+      where: {
+        id,
+      },
+      data: profile,
+    });
+  }
+
   getUserByProvider(providerId: string, provider: Provider) {
     return this._user.model.user.findFirst({
       where: {

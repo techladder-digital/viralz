@@ -10,6 +10,7 @@ import React, {
   useState,
 } from 'react';
 import { AddEditModalProps } from '@gitroom/frontend/components/new-launch/add.edit.modal';
+import { PostFormatPicker } from '@gitroom/frontend/components/new-launch/post.format.picker';
 import clsx from 'clsx';
 import { useT } from '@gitroom/react/translation/get.transation.service.client';
 import { PicksSocialsComponent } from '@gitroom/frontend/components/new-launch/picks.socials.component';
@@ -467,16 +468,19 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
   );
 
   return (
-    <div className="w-full h-full flex-1 p-[40px] flex relative">
-      <div className="flex flex-1 bg-newBgColorInner rounded-[20px] flex-col">
-        <div className="flex-1 flex">
-          <div className="flex flex-col flex-1 border-e border-newBorder">
-            <div className="bg-newBgColor h-[65px] rounded-s-[20px] !rounded-b-[0] flex items-center gap-[12px] px-[20px] text-[20px] font-[600]">
+    <div className="w-full h-full flex-1 p-[40px] flex relative mobile:p-0">
+      <div className="flex flex-1 bg-newBgColorInner rounded-[20px] flex-col mobile:rounded-none">
+        <div className="flex-1 flex mobile:flex-col">
+          <div className="flex flex-col flex-1 border-e border-newBorder mobile:border-e-0 mobile:min-h-0">
+            <div className="bg-newBgColor h-[65px] rounded-s-[20px] !rounded-b-[0] flex items-center gap-[12px] px-[20px] text-[20px] font-[600] mobile:h-[56px] mobile:px-[12px] mobile:text-[18px] mobile:rounded-none">
               {t('create_post_title', 'Create Post')}
               <CreationMethodBadge
                 creationMethod={existingData?.posts?.[0]?.creationMethod}
                 size="sm"
               />
+              <div className="hidden mobile:flex ms-auto cursor-pointer">
+                <CloseIcon onClick={askClose} className="text-[#A3A3A3]" />
+              </div>
             </div>
             <div className="flex-1 flex flex-col gap-[16px]">
               <div
@@ -484,9 +488,9 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
               >
                 <div
                   id="social-content"
-                  className="gap-[32px] flex flex-col pe-[8px] pt-[20px] ps-[20px] absolute top-0 left-0 w-full h-full overflow-x-hidden overflow-y-scroll scrollbar scrollbar-thumb-newColColor scrollbar-track-newBgColorInner"
+                  className="gap-[32px] flex flex-col pe-[8px] pt-[20px] ps-[20px] absolute top-0 left-0 w-full h-full overflow-x-hidden overflow-y-scroll scrollbar scrollbar-thumb-newColColor scrollbar-track-newBgColorInner mobile:gap-[20px] mobile:pt-[12px] mobile:ps-[12px]"
                 >
-                  <div className="flex w-full">
+                  <div className="flex w-full mobile:flex-wrap mobile:gap-[8px]">
                     <div className="flex flex-1">
                       <PicksSocialsComponent toolTip={true} />
                     </div>
@@ -499,6 +503,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
                       )}
                     </div>
                   </div>
+                  {!existingData.integration && !dummy && <PostFormatPicker />}
                   <div className="flex flex-1 gap-[6px] flex-col">
                     <div>{!existingData.integration && <SelectCurrent />}</div>
                     <div className="flex-1 flex">
@@ -526,7 +531,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
                   <div
                     onClick={() => setShowSettings(!showSettings)}
                     className={clsx(
-                      'bg-[#612BD3] rounded-[12px] flex items-center gap-[8px] cursor-pointer p-[12px]',
+                      'bg-[#F97316] rounded-[12px] flex items-center gap-[8px] cursor-pointer p-[12px]',
                       showSettings ? '!rounded-b-none' : ''
                     )}
                   >
@@ -560,10 +565,10 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
               </div>
             </div>
           </div>
-          <div className="w-[580px] flex flex-col">
-            <div className="bg-newBgColor h-[65px] rounded-e-[20px] !rounded-b-[0] flex items-center px-[20px] text-[20px] font-[600]">
+          <div className="w-[580px] flex flex-col mobile:w-full mobile:h-[30vh] mobile:shrink-0 mobile:border-t mobile:border-newBorder">
+            <div className="bg-newBgColor h-[65px] rounded-e-[20px] !rounded-b-[0] flex items-center px-[20px] text-[20px] font-[600] mobile:h-[48px] mobile:px-[12px] mobile:text-[16px] mobile:rounded-none">
               <div className="flex-1">{t('post_preview', 'Post Preview')}</div>
-              <div className="cursor-pointer">
+              <div className="cursor-pointer mobile:hidden">
                 <CloseIcon onClick={askClose} className="text-[#A3A3A3]" />
               </div>
             </div>
@@ -577,8 +582,8 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
             </div>
           </div>
         </div>
-        <div className="select-none h-[84px] py-[20px] border-t border-newBorder flex items-center">
-          <div className="flex-1 flex ps-[20px] gap-[8px]">
+        <div className="select-none h-[84px] py-[20px] border-t border-newBorder flex items-center mobile:h-auto mobile:py-[12px] mobile:flex-wrap mobile:gap-[10px]">
+          <div className="flex-1 flex ps-[20px] gap-[8px] mobile:basis-full mobile:px-[12px] mobile:flex-wrap">
             {!dummy && (
               <TagsComponent
                 name="tags"
@@ -594,7 +599,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
               <RepeatComponent repeat={repeater} onChange={setRepeater} />
             )}
           </div>
-          <div className="pe-[20px] flex items-center justify-end gap-[8px]">
+          <div className="pe-[20px] flex items-center justify-end gap-[8px] mobile:basis-full mobile:px-[12px] mobile:flex-wrap">
             {existingData?.integration && (
               <button
                 onClick={deletePost}
@@ -627,7 +632,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
             )}
             {addEditSets && (
               <button
-                className="text-white text-[15px] font-[600] min-w-[180px] btnSub disabled:cursor-not-allowed disabled:opacity-80 outline-none gap-[8px] flex justify-center items-center h-[44px] rounded-[8px] bg-[#612BD3] ps-[20px] pe-[16px]"
+                className="text-white text-[15px] font-[600] min-w-[180px] btnSub disabled:cursor-not-allowed disabled:opacity-80 outline-none gap-[8px] flex justify-center items-center h-[44px] rounded-[8px] bg-[#F97316] ps-[20px] pe-[16px]"
                 disabled={
                   selectedIntegrations.length === 0 || loading || locked
                 }
@@ -643,7 +648,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
                     selectedIntegrations.length === 0 || loading || locked
                   }
                   onClick={schedule('schedule')}
-                  className="text-white relative min-w-[180px] btnSub disabled:cursor-not-allowed disabled:opacity-80 outline-none gap-[8px] flex justify-center items-center h-[44px] rounded-[8px] bg-[#612BD3] ps-[20px] pe-[16px]"
+                  className="text-white relative min-w-[180px] mobile:min-w-[150px] btnSub disabled:cursor-not-allowed disabled:opacity-80 outline-none gap-[8px] flex justify-center items-center h-[44px] rounded-[8px] bg-[#F97316] ps-[20px] pe-[16px]"
                 >
                   {loading && (
                     <div className="absolute left-[50%] top-[50%] -translate-y-[50%] -translate-x-[50%]">
@@ -681,7 +686,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
                     }
                     className="rounded-[8px] z-[300] disabled:cursor-not-allowed disabled:opacity-80 hidden group-hover:flex absolute bottom-[100%] -left-[12px] p-[12px] w-[206px] bg-newBgColorInner"
                   >
-                    <div className="text-white rounded-[8px] bg-[#D82D7E] h-[44px] w-full flex justify-center items-center post-now">
+                    <div className="text-white rounded-[8px] bg-[#EA580C] h-[44px] w-full flex justify-center items-center post-now">
                       {t('post_now', 'Post Now')}
                     </div>
                   </button>

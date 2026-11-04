@@ -234,10 +234,10 @@ export default function TermsPage() {
             <p>
               Questions about these Terms? Contact us at{' '}
               <a
-                href="mailto:legal@viralz.online"
+                href="mailto:techladder94@gmail.com"
                 className="underline hover:font-bold"
               >
-                legal@viralz.online
+                techladder94@gmail.com
               </a>
               .
             </p>

@@ -287,9 +287,9 @@ export const Filters = () => {
   }, [calendar]);
 
   return (
-    <div className="text-textColor flex flex-col md:flex-row gap-[8px] items-center select-none">
+    <div className="text-textColor flex flex-col md:flex-row gap-[8px] items-center select-none mobile:flex-wrap mobile:justify-center">
       {!isListView && (
-        <div className="flex flex-grow flex-row items-center gap-[10px]">
+        <div className="flex flex-grow flex-row items-center gap-[10px] mobile:flex-wrap mobile:justify-center">
           <div className="border h-[42px] border-newTableBorder bg-newTableBorder gap-[1px] flex items-center rounded-[8px] overflow-hidden">
             <div
               onClick={previous}
@@ -311,7 +311,7 @@ export const Filters = () => {
                 />
               </svg>
             </div>
-            <div className="min-w-[200px] text-center bg-newBgColorInner h-full flex items-center justify-center">
+            <div className="min-w-[200px] mobile:min-w-[150px] text-center bg-newBgColorInner h-full flex items-center justify-center">
               <div className="py-[3px] px-[9px] rounded-[5px] transition-all text-[14px]">
                 {getDisplayText()}
               </div>
@@ -350,7 +350,7 @@ export const Filters = () => {
         </div>
       )}
       {isListView && (
-        <div className="flex flex-grow flex-row items-center gap-[10px]">
+        <div className="flex flex-grow flex-row items-center gap-[10px] mobile:flex-wrap mobile:justify-center">
           <div className="border h-[42px] border-newTableBorder bg-newTableBorder gap-[1px] flex items-center rounded-[8px] overflow-hidden">
             <div
               onClick={previousPage}
@@ -377,7 +377,7 @@ export const Filters = () => {
                 />
               </svg>
             </div>
-            <div className="min-w-[200px] text-center bg-newBgColorInner h-full flex items-center justify-center">
+            <div className="min-w-[200px] mobile:min-w-[150px] text-center bg-newBgColorInner h-full flex items-center justify-center">
               <div className="py-[3px] px-[9px] rounded-[5px] transition-all text-[14px]">
                 {t('page', 'Page')} {calendar.listPage + 1} {t('of', 'of')} {Math.max(1, calendar.listTotalPages)}
               </div>
@@ -414,7 +414,7 @@ export const Filters = () => {
                 key={option.value}
                 onClick={setListStateFilter(option.value)}
                 className={clsx(
-                  'pt-[6px] pb-[5px] cursor-pointer min-w-[80px] px-[12px] text-center rounded-[6px]',
+                  'pt-[6px] pb-[5px] cursor-pointer min-w-[80px] px-[12px] text-center rounded-[6px] mobile:min-w-[64px] mobile:px-[8px]',
                   calendar.listState === option.value &&
                     'text-textItemFocused bg-boxFocused'
                 )}

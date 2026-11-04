@@ -153,7 +153,7 @@ export const MoltbookProvider: FC<Web3ProviderInterface> = (props) => {
               href={claimUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-500 hover:underline"
+              className="text-orange-500 hover:underline"
             >
               {t('open_claim_page', 'Open claim page')}
             </a>

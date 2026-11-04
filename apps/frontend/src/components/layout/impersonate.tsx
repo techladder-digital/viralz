@@ -311,7 +311,7 @@ const ApplyCouponModal: FC<{ close: () => void }> = ({ close }) => {
               <Button
                 onClick={handleApply}
                 loading={applying}
-                className="!bg-blue-700 rounded-[4px]"
+                className="!bg-orange-700 rounded-[4px]"
               >
                 {t('apply', 'Apply')}
               </Button>
@@ -514,7 +514,7 @@ const ChargesModal: FC<{ close: () => void }> = ({ close }) => {
       <div className="flex gap-[12px] justify-end">
         <Button
           onClick={handleApplyCoupon}
-          className="!bg-blue-700 rounded-[4px]"
+          className="!bg-orange-700 rounded-[4px]"
         >
           {t('apply_coupon', 'Apply Coupon')}
         </Button>
@@ -607,7 +607,7 @@ export const Subscription = () => {
   );
 };
 const colorOptions = [
-  { value: 'INFO', label: 'Info (Blue)', className: 'bg-blue-600' },
+  { value: 'INFO', label: 'Info (Orange)', className: 'bg-orange-600' },
   { value: 'WARNING', label: 'Warning (Amber)', className: 'bg-amber-600' },
   { value: 'ERROR', label: 'Error (Red)', className: 'bg-red-600' },
 ];
@@ -806,7 +806,7 @@ const ViewErrors = () => {
   }, []);
   return (
     <div
-      className="px-[10px] rounded-[4px] bg-blue-700 text-white cursor-pointer whitespace-nowrap"
+      className="px-[10px] rounded-[4px] bg-orange-700 text-white cursor-pointer whitespace-nowrap"
       onClick={handleClick}
     >
       {t('view_errors', 'View Errors')}
@@ -821,7 +821,7 @@ const ViewStats = () => {
   }, []);
   return (
     <div
-      className="px-[10px] rounded-[4px] bg-purple-700 text-white cursor-pointer whitespace-nowrap"
+      className="px-[10px] rounded-[4px] bg-orange-700 text-white cursor-pointer whitespace-nowrap"
       onClick={handleClick}
     >
       {t('view_stats', 'View Stats')}

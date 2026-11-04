@@ -14,6 +14,14 @@ interface Values {
   media: { id: string; path: string; thumbnail?: string }[];
 }
 
+export type PostFormat = 'short' | 'long' | 'photo' | 'story';
+
+// What a channel does for each format: the name it uses and the settings to
+// apply. A format left out means the channel cannot post that format.
+export type ProviderFormats = Partial<
+  Record<PostFormat, { label: string; settings?: Record<string, any> }>
+>;
+
 export interface Internal {
   integration: Integrations;
   integrationValue: Values[];
@@ -132,6 +140,10 @@ interface StoreState {
   setLoaded?: (loaded: boolean) => void;
   setChars: (id: string, chars: number) => void;
   chars: Record<string, number>;
+  postFormat: PostFormat | null;
+  setPostFormat: (postFormat: PostFormat | null) => void;
+  providerFormats: Record<string, ProviderFormats | undefined>;
+  setProviderFormats: (id: string, formats?: ProviderFormats) => void;
   setComments: (comments: boolean | 'no-media') => void;
 }
 
@@ -155,10 +167,23 @@ const initialState = {
   global: [] as Values[],
   internal: [] as Internal[],
   chars: {},
+  postFormat: null as PostFormat | null,
+  providerFormats: {} as Record<string, ProviderFormats | undefined>,
 };
 
 export const useLaunchStore = create<StoreState>()((set) => ({
   ...initialState,
+  setPostFormat: (postFormat: PostFormat | null) =>
+    set(() => ({
+      postFormat,
+    })),
+  setProviderFormats: (id: string, formats?: ProviderFormats) =>
+    set((state) => ({
+      providerFormats: {
+        ...state.providerFormats,
+        [id]: formats,
+      },
+    })),
   setCurrent: (current: string) =>
     set((state) => ({
       current: current,

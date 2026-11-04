@@ -27,6 +27,9 @@ services:
         condition: service_healthy
       viralz-redis:
         condition: service_healthy
+      # Backend and workers fail to register with Temporal if it is still bootstrapping
+      temporal:
+        condition: service_healthy
 
   viralz-postgres:
     image: postgres:17-alpine
@@ -122,6 +125,13 @@ services:
       - temporal-network
     volumes:
       - ./dynamicconfig:/etc/temporal/config/dynamicconfig
+    healthcheck:
+      # auto-setup images ship the `temporal` CLI in newer versions and `tctl` in older ones
+      test: ['CMD-SHELL', 'temporal operator cluster health --address temporal:7233 || tctl --address temporal:7233 cluster health']
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
 
   temporal-ui:
     container_name: temporal-ui

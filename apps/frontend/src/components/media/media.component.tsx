@@ -4,6 +4,7 @@ import React, {
   ChangeEvent,
   ClipboardEvent,
   FC,
+  FormEvent,
   Fragment,
   useCallback,
   useEffect,
@@ -200,6 +201,158 @@ export const showMediaBox = (
 };
 const CHUNK_SIZE = 1024 * 1024;
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 1024; // 1 GB
+const useMediaFolders = () => {
+  const fetch = useFetch();
+  const load = useCallback(async () => {
+    return (await fetch('/media/folders')).json();
+  }, []);
+  return useSWR<{ id: string; name: string }[]>('get-media-folders', load);
+};
+const MediaFolders: FC<{
+  folder: string;
+  setFolder: (folder: string) => void;
+  onDeleted: () => void;
+}> = ({ folder, setFolder, onDeleted }) => {
+  const fetch = useFetch();
+  const toaster = useToaster();
+  const t = useT();
+  const { data: folders, mutate } = useMediaFolders();
+  const [creating, setCreating] = useState(false);
+  const [name, setName] = useState('');
+
+  const createFolder = useCallback(
+    async (e: FormEvent) => {
+      e.preventDefault();
+      if (!name.trim()) {
+        setCreating(false);
+        return;
+      }
+      const response = await fetch('/media/folders', {
+        method: 'POST',
+        body: JSON.stringify({ name }),
+      });
+      if (!response.ok) {
+        toaster.show(
+          t('could_not_create_folder', 'Could not create the folder'),
+          'warning'
+        );
+        return;
+      }
+      const created = await response.json();
+      await mutate();
+      setFolder(created.id);
+      setName('');
+      setCreating(false);
+    },
+    [name, setFolder]
+  );
+
+  const deleteFolder = useCallback(
+    (id: string) => async () => {
+      if (
+        !(await deleteDialog(
+          t(
+            'are_you_sure_you_want_to_delete_the_folder',
+            'Delete this folder? Its files stay in All media.'
+          )
+        ))
+      ) {
+        return;
+      }
+      await fetch(`/media/folders/${id}`, {
+        method: 'DELETE',
+      });
+      await mutate();
+      if (folder === id) {
+        setFolder('');
+      }
+      onDeleted();
+    },
+    [folder, setFolder, onDeleted]
+  );
+
+  const chip = 'h-[36px] px-[12px] rounded-[8px] border text-[14px]';
+
+  return (
+    <div className="flex flex-wrap items-center gap-[8px] mb-[12px]">
+      <button
+        type="button"
+        aria-pressed={!folder}
+        onClick={() => setFolder('')}
+        className={clsx(
+          chip,
+          !folder ? 'border-[#F97316]' : 'border-newColColor'
+        )}
+      >
+        {t('all_media', 'All media')}
+      </button>
+      {folders?.map((item) => (
+        <div
+          key={item.id}
+          className={clsx(
+            'flex items-center rounded-[8px] border',
+            folder === item.id ? 'border-[#F97316]' : 'border-newColColor'
+          )}
+        >
+          <button
+            type="button"
+            aria-pressed={folder === item.id}
+            onClick={() => setFolder(item.id)}
+            className="flex items-center gap-[6px] h-[34px] ps-[12px] pe-[6px] text-[14px] max-w-[220px]"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+              className="shrink-0"
+            >
+              <path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2Z" />
+            </svg>
+            <span className="truncate">{item.name}</span>
+          </button>
+          <button
+            type="button"
+            aria-label={`${t('delete', 'Delete')} ${item.name}`}
+            onClick={deleteFolder(item.id)}
+            className="h-[34px] pe-[10px] ps-[4px] text-textItemBlur hover:text-textColor"
+          >
+            ×
+          </button>
+        </div>
+      ))}
+      {creating ? (
+        <form onSubmit={createFolder} className="flex gap-[8px]">
+          <input
+            autoFocus
+            type="text"
+            value={name}
+            maxLength={50}
+            onChange={(e) => setName(e.target.value)}
+            placeholder={t('folder_name', 'Folder name')}
+            className="h-[36px] w-[180px] px-[12px] rounded-[8px] bg-newBgColorInner border border-newColColor text-[14px] outline-none focus:border-[#F97316]"
+          />
+          <button type="submit" className={clsx(chip, 'border-newColColor')}>
+            {t('create', 'Create')}
+          </button>
+        </form>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setCreating(true)}
+          className={clsx(
+            chip,
+            'flex items-center gap-[6px] border-dashed border-newColColor'
+          )}
+        >
+          <PlusIcon size={12} />
+          {t('new_folder', 'New folder')}
+        </button>
+      )}
+    </div>
+  );
+};
 export const MediaBox: FC<{
   setMedia: (params: { id: string; path: string }[]) => void;
   standalone?: boolean;
@@ -209,21 +362,29 @@ export const MediaBox: FC<{
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounce(search, 300);
+  const [folder, setFolder] = useState('');
+  // The uploader keeps its first callback, so it reads the open folder from here
+  const folderRef = useRef(folder);
+  folderRef.current = folder;
   const fetch = useFetch();
   const modals = useModals();
   const toaster = useToaster();
+  const { data: folders } = useMediaFolders();
   useEffect(() => {
     setPage(0);
-  }, [debouncedSearch]);
+  }, [debouncedSearch, folder]);
   const loadMedia = useCallback(async () => {
     const params = new URLSearchParams({ page: String(page + 1) });
     if (debouncedSearch.trim()) {
       params.set('search', debouncedSearch.trim());
     }
+    if (folder) {
+      params.set('folder', folder);
+    }
     return (await fetch(`/media?${params.toString()}`)).json();
-  }, [page, debouncedSearch]);
+  }, [page, debouncedSearch, folder]);
   const { data, mutate, isLoading } = useSWR(
-    `get-media-${page}-${debouncedSearch}`,
+    `get-media-${page}-${debouncedSearch}-${folder}`,
     loadMedia
   );
   const [selected, setSelected] = useState([]);
@@ -240,6 +401,25 @@ export const MediaBox: FC<{
         ? 'video/mp4'
         : 'image/*,video/mp4',
     onUploadSuccess: async (arr) => {
+      const ids = arr.filter((p: any) => p?.id).map((p: any) => p.id);
+      if (folderRef.current && ids.length) {
+        const moved = await fetch('/media/move', {
+          method: 'POST',
+          body: JSON.stringify({
+            ids,
+            folderId: folderRef.current,
+          }),
+        });
+        if (!moved.ok) {
+          toaster.show(
+            t(
+              'could_not_move_to_folder',
+              'Uploaded, but could not move to the folder. Find it in All media.'
+            ),
+            'warning'
+          );
+        }
+      }
       await mutate();
       if (standalone) {
         return;
@@ -394,6 +574,20 @@ export const MediaBox: FC<{
     [mutate]
   );
 
+  const moveMedia = useCallback(
+    (media: any) => async (e: ChangeEvent<HTMLSelectElement>) => {
+      await fetch('/media/move', {
+        method: 'POST',
+        body: JSON.stringify({
+          ids: [media.id],
+          folderId: e.target.value || null,
+        }),
+      });
+      mutate();
+    },
+    [mutate]
+  );
+
   const btn = useMemo(() => {
     return (
       <button
@@ -416,22 +610,27 @@ export const MediaBox: FC<{
   return (
     <DropFiles disabled={loading} className="flex flex-col flex-1" onDrop={dragAndDrop}>
       <div className="flex flex-col flex-1">
+        <MediaFolders
+          folder={folder}
+          setFolder={setFolder}
+          onDeleted={() => mutate()}
+        />
         <div
           className={clsx(
-            'flex items-center gap-[12px]',
+            'flex items-center gap-[12px] mobile:flex-wrap',
             !isLoading &&
               !data?.results?.length &&
               !debouncedSearch &&
               'hidden'
           )}
         >
-          <div className="flex-1">
+          <div className="flex-1 mobile:basis-full">
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t('search_media_by_name', 'Search by file name')}
-              className="w-full h-[44px] px-[14px] rounded-[8px] bg-newBgColorInner border border-newColColor text-[14px] outline-none focus:border-[#612BD3]"
+              className="w-full h-[44px] px-[14px] rounded-[8px] bg-newBgColorInner border border-newColColor text-[14px] outline-none focus:border-[#F97316]"
             />
           </div>
           <input
@@ -487,6 +686,8 @@ export const MediaBox: FC<{
                         'no_media_match_search',
                         'No media matches your search'
                       )
+                    : folder
+                    ? t('media_folder_empty', 'This folder is empty')
                     : t(
                         'you_dont_have_any_media_yet',
                         "You don't have any media yet"
@@ -544,13 +745,13 @@ export const MediaBox: FC<{
                     className={clsx(
                       'w-full h-full rounded-[6px] border-[4px] relative',
                       !!selected.find((p) => p.id === media.id)
-                        ? 'border-[#612BD3]'
+                        ? 'border-[#F97316]'
                         : 'border-transparent'
                     )}
                     onClick={addRemoveSelected(media)}
                   >
                     {!!selected.find((p: any) => p.id === media.id) ? (
-                      <div className="text-white flex z-[101] justify-center items-center text-[14px] font-[500] w-[24px] h-[24px] rounded-full bg-[#612BD3] absolute -bottom-[10px] -end-[10px]">
+                      <div className="text-white flex z-[101] justify-center items-center text-[14px] font-[500] w-[24px] h-[24px] rounded-full bg-[#F97316] absolute -bottom-[10px] -end-[10px]">
                         {selected.findIndex((z: any) => z.id === media.id) + 1}
                       </div>
                     ) : (
@@ -559,7 +760,30 @@ export const MediaBox: FC<{
                         onClick={deleteImage(media)}
                       />
                     )}
-                    <div className="absolute bottom-[10px] end-[10px] z-[100]">{media.originalName}</div>
+                    {!!folders?.length && (
+                      <select
+                        aria-label={t('move_to_folder', 'Move to folder')}
+                        value={media.folderId || ''}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={moveMedia(media)}
+                        className="absolute top-[6px] start-[6px] z-[100] h-[28px] max-w-[calc(100%-44px)] rounded-[6px] bg-newBgColorInner border border-newColColor text-[12px] outline-none opacity-0 group-hover:opacity-100 focus:opacity-100 mobile:opacity-100"
+                      >
+                        <option value="">{t('no_folder', 'No folder')}</option>
+                        {folders.map((item) => (
+                          <option key={item.id} value={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                    {!!media.originalName && (
+                      <div
+                        title={media.originalName}
+                        className="absolute bottom-0 start-0 end-0 z-[100] truncate px-[8px] py-[4px] text-[12px] text-white bg-black/60"
+                      >
+                        {media.originalName}
+                      </div>
+                    )}
                     <div className="w-full h-full rounded-[6px] overflow-hidden relative">
                       <div className="absolute z-[20] left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%]">
                         <div
@@ -616,7 +840,7 @@ export const MediaBox: FC<{
               <button
                 onClick={standalone ? () => {} : addMedia}
                 disabled={selected.length === 0}
-                className="cursor-pointer text-white disabled:opacity-80 disabled:cursor-not-allowed h-[52px] px-[20px] items-center justify-center bg-[#612BD3] flex rounded-[10px]"
+                className="cursor-pointer text-white disabled:opacity-80 disabled:cursor-not-allowed h-[52px] px-[20px] items-center justify-center bg-[#F97316] flex rounded-[10px]"
               >
                 {t('add_selected_media', 'Add selected media')}
               </button>

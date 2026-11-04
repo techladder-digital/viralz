@@ -9,7 +9,9 @@ export const metadata: Metadata = {
   description: 'Privacy Policy for Viralz.',
 };
 
-const lastUpdated = 'September 13, 2026';
+const lastUpdated = 'November 1, 2026';
+
+const externalLink = 'underline hover:font-bold';
 
 export default function PrivacyPage() {
   return (
@@ -118,9 +120,139 @@ export default function PrivacyPage() {
             </ul>
           </section>
 
+          <section id="google-user-data">
+            <h2 className="text-[20px] font-semibold mb-[8px]">
+              4. Google User Data and YouTube API Services
+            </h2>
+            <p>
+              Viralz uses YouTube API Services. By connecting a YouTube
+              channel to Viralz you also agree to be bound by the{' '}
+              <a
+                href="https://www.youtube.com/t/terms"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={externalLink}
+              >
+                YouTube Terms of Service
+              </a>
+              . Google&apos;s handling of your data is described in the{' '}
+              <a
+                href="https://policies.google.com/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={externalLink}
+              >
+                Google Privacy Policy
+              </a>
+              .
+            </p>
+            <p className="font-semibold mt-[8px]">What we access</p>
+            <ul className="list-disc pl-[24px] flex flex-col gap-[4px]">
+              <li>
+                When you sign in with Google: your name, email address and
+                profile picture.
+              </li>
+              <li>
+                When you connect a YouTube channel: the channel name, ID and
+                avatar; permission to upload the videos you schedule and set
+                their title, description, privacy status and thumbnail; and
+                read access to video statistics and YouTube Analytics for that
+                channel.
+              </li>
+            </ul>
+            <p className="font-semibold mt-[8px]">How we use it</p>
+            <p>
+              We use Google user data only to provide the features you ask
+              for: publishing the videos you schedule and showing analytics for
+              your channel inside Viralz. We do not sell Google user data, do
+              not use it for advertising, and do not use it to develop, improve
+              or train generalized AI or machine-learning models. No person at
+              Viralz reads this data unless you ask us to (for example in a
+              support request), it is needed for security or abuse
+              investigations, or the law requires it.
+            </p>
+            <p className="mt-[8px]">
+              Viralz&apos;s use and transfer to any other app of information
+              received from Google APIs will adhere to the{' '}
+              <a
+                href="https://developers.google.com/terms/api-services-user-data-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={externalLink}
+              >
+                Google API Services User Data Policy
+              </a>
+              , including the Limited Use requirements.
+            </p>
+            <p className="font-semibold mt-[8px]">Revoking access and deletion</p>
+            <p>
+              You can disconnect a YouTube channel at any time by deleting it
+              from your Viralz channel list, which immediately deletes the
+              access tokens, username and picture we stored for it. The channel
+              name stays attached to posts you already published through Viralz
+              until you delete those posts or your account. You can also revoke
+              Viralz&apos;s
+              access from your Google account at{' '}
+              <a
+                href="https://security.google.com/settings/security/permissions"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={externalLink}
+              >
+                Google security settings
+              </a>
+              . Deleting your Viralz account removes all remaining channel
+              data, and you can also email{' '}
+              <a href="mailto:techladder94@gmail.com" className={externalLink}>
+                techladder94@gmail.com
+              </a>{' '}
+              to have any data obtained through YouTube API Services deleted
+              within 30 days.
+            </p>
+          </section>
+
+          <section id="data-deletion">
+            <h2 className="text-[20px] font-semibold mb-[8px]">
+              5. Facebook and Instagram Data
+            </h2>
+            <p>
+              When you connect a Facebook Page or an Instagram professional
+              account, Meta shares with us the Page or account ID, name and
+              picture, and an access token that lets Viralz publish the posts
+              you schedule, read comments on them and show their insights. We
+              use this data only to provide those features, and we do not sell
+              it or use it for advertising.
+            </p>
+            <p className="font-semibold mt-[8px]">
+              How to delete your Facebook and Instagram data
+            </p>
+            <ul className="list-disc pl-[24px] flex flex-col gap-[4px]">
+              <li>
+                Delete the channel from your Viralz channel list. This
+                immediately deletes the access tokens, username and picture we
+                stored for it.
+              </li>
+              <li>
+                Remove Viralz from your Facebook account under Settings &amp;
+                privacy &gt; Settings &gt; Business integrations.
+              </li>
+              <li>
+                To delete all of your data, delete your Viralz account from
+                your account settings, or email{' '}
+                <a
+                  href="mailto:techladder94@gmail.com"
+                  className={externalLink}
+                >
+                  techladder94@gmail.com
+                </a>{' '}
+                and we will complete the deletion within 30 days.
+              </li>
+            </ul>
+          </section>
+
           <section>
             <h2 className="text-[20px] font-semibold mb-[8px]">
-              4. Data Retention
+              6. Data Retention
             </h2>
             <p>
               We retain your account data for as long as your account is
@@ -133,7 +265,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-[20px] font-semibold mb-[8px]">
-              5. Your Rights
+              7. Your Rights
             </h2>
             <p>
               Depending on where you live, you may have the right to access,
@@ -142,10 +274,10 @@ export default function PrivacyPage() {
               yourself from your account settings (including disconnecting
               social accounts and deleting your account), or contact us at{' '}
               <a
-                href="mailto:privacy@viralz.online"
-                className="underline hover:font-bold"
+                href="mailto:techladder94@gmail.com"
+                className={externalLink}
               >
-                privacy@viralz.online
+                techladder94@gmail.com
               </a>{' '}
               to make a request.
             </p>
@@ -153,7 +285,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-[20px] font-semibold mb-[8px]">
-              6. Cookies
+              8. Cookies
             </h2>
             <p>
               We use cookies and similar technologies to keep you signed in,
@@ -166,7 +298,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-[20px] font-semibold mb-[8px]">
-              7. Data Security
+              9. Data Security
             </h2>
             <p>
               We use industry-standard measures (encryption in transit,
@@ -178,7 +310,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-[20px] font-semibold mb-[8px]">
-              8. Children&apos;s Privacy
+              10. Children&apos;s Privacy
             </h2>
             <p>
               Viralz is not directed at children under 16, and we do not
@@ -190,7 +322,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-[20px] font-semibold mb-[8px]">
-              9. International Data Transfers
+              11. International Data Transfers
             </h2>
             <p>
               Your information may be processed in countries other than
@@ -201,7 +333,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-[20px] font-semibold mb-[8px]">
-              10. Changes to This Policy
+              12. Changes to This Policy
             </h2>
             <p>
               We may update this Privacy Policy from time to time. Material
@@ -212,15 +344,15 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-[20px] font-semibold mb-[8px]">
-              11. Contact Us
+              13. Contact Us
             </h2>
             <p>
               Questions about this Privacy Policy? Contact us at{' '}
               <a
-                href="mailto:privacy@viralz.online"
-                className="underline hover:font-bold"
+                href="mailto:techladder94@gmail.com"
+                className={externalLink}
               >
-                privacy@viralz.online
+                techladder94@gmail.com
               </a>
               .
             </p>

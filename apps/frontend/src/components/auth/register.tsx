@@ -34,6 +34,7 @@ const WalletProvider = dynamic(
 type Inputs = {
   email: string;
   password: string;
+  confirmPassword: string;
   company: string;
   providerToken: string;
   provider: string;
@@ -115,10 +116,21 @@ export function RegisterAfter({
     defaultValues: {
       providerToken: token,
       provider: provider,
+      // Email signups ask only for email and password; the workspace name can be changed later
+      company: !!token && !!provider ? '' : 'My Workspace',
     },
   });
   const fetchData = useFetch();
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async ({
+    confirmPassword,
+    ...data
+  }) => {
+    if (!isAfterProvider && data.password !== confirmPassword) {
+      form.setError('confirmPassword', {
+        message: t('passwords_do_not_match', 'Passwords do not match'),
+      });
+      return;
+    }
     setLoading(true);
     await fetchData('/auth/register', {
       method: 'POST',
@@ -133,7 +145,9 @@ export function RegisterAfter({
           fireEvents('register');
           return track(TrackEnum.CompleteRegistration).then(() => {
             if (response.headers.get('activate') === 'true') {
-              router.push('/auth/activate');
+              router.push(
+                `/auth/activate?email=${encodeURIComponent(data.email)}`
+              );
             } else {
               router.push('/auth/login');
             }
@@ -158,7 +172,7 @@ export function RegisterAfter({
       <form className="flex-1 flex" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col flex-1">
           <div>
-            <h1 className="text-[40px] font-[500] -tracking-[0.8px] text-start cursor-pointer">
+            <h1 className="text-[40px] mobile:text-[30px] font-[500] -tracking-[0.8px] text-start cursor-pointer">
               {t('sign_up', 'Sign Up')}
             </h1>
           </div>
@@ -210,16 +224,29 @@ export function RegisterAfter({
                       type="password"
                       placeholder={t('label_password', 'Password')}
                     />
+                    <Input
+                      label="Confirm password"
+                      translationKey="label_confirm_password"
+                      {...form.register('confirmPassword')}
+                      autoComplete="off"
+                      type="password"
+                      placeholder={t(
+                        'label_confirm_password',
+                        'Confirm password'
+                      )}
+                    />
                   </>
                 )}
-                <Input
-                  label="Company"
-                  translationKey="label_company"
-                  {...form.register('company')}
-                  autoComplete="off"
-                  type="text"
-                  placeholder={t('label_company', 'Company')}
-                />
+                {isAfterProvider && (
+                  <Input
+                    label="Company"
+                    translationKey="label_company"
+                    {...form.register('company')}
+                    autoComplete="off"
+                    type="text"
+                    placeholder={t('label_company', 'Company')}
+                  />
+                )}
               </div>
               <div className={clsx('text-[12px]')}>
                 {t(

@@ -18,12 +18,28 @@ const fetchUploadApiEndpoint = async (
   return res.json();
 };
 
+// Without secured cookies the backend reads these from headers, like customFetch sends them
+const getNonSecuredHeaders = () => {
+  const headers: Record<string, string> = {};
+  ['auth', 'showorg', 'impersonate'].forEach((name) => {
+    const value = document.cookie
+      .split(';')
+      .find((p) => p.includes(`${name}=`))
+      ?.split('=')[1];
+    if (value) {
+      headers[name] = value;
+    }
+  });
+  return headers;
+};
+
 // Define the factory to return appropriate Uppy configuration
 export const getUppyUploadPlugin = (
   provider: string,
   fetch: any,
   backendUrl: string,
-  transloadit: string[] = []
+  transloadit: string[] = [],
+  secured: boolean = true
 ) => {
   switch (provider) {
     case 'transloadit':
@@ -97,7 +113,9 @@ export const getUppyUploadPlugin = (
         plugin: XHRUpload,
         options: {
           endpoint: `${backendUrl}/media/upload-server`,
-          withCredentials: true,
+          ...(secured
+            ? { withCredentials: true }
+            : { headers: getNonSecuredHeaders }),
         },
       };
 

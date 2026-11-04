@@ -377,6 +377,8 @@ export class IntegrationRepository {
             not: upsert.id,
           },
           rootInternalId: rootId,
+          // deleted siblings had their tokens dropped and must not get them back
+          deletedAt: null,
         },
         data: {
           token,
@@ -596,6 +598,10 @@ export class IntegrationRepository {
   }
 
   deleteChannel(org: string, id: string) {
+    // Drop the stored OAuth tokens and profile data: a deleted channel must not
+    // keep access to the user's account (Google/Meta data policies). The name
+    // stays so already published posts still show their channel. Reconnecting
+    // the same channel stores fresh values through createOrUpdateIntegration.
     return this._integration.model.integration.update({
       where: {
         id,
@@ -603,6 +609,10 @@ export class IntegrationRepository {
       },
       data: {
         deletedAt: new Date(),
+        token: '',
+        refreshToken: null,
+        picture: null,
+        profile: null,
       },
     });
   }

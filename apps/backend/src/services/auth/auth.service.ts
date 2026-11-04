@@ -11,6 +11,12 @@ import { NotificationService } from '@gitroom/nestjs-libraries/database/prisma/n
 import { ForgotReturnPasswordDto } from '@gitroom/nestjs-libraries/dtos/auth/forgot-return.password.dto';
 import { EmailService } from '@gitroom/nestjs-libraries/services/email.service';
 import { NewsletterService } from '@gitroom/nestjs-libraries/newsletter/newsletter.service';
+import { ioRedis } from '@gitroom/nestjs-libraries/redis/redis.service';
+import { createHash, randomInt, timingSafeEqual } from 'crypto';
+
+const ACTIVATION_CODE_TTL_SECONDS = 600;
+const ACTIVATION_RESEND_COOLDOWN_SECONDS = 60;
+const ACTIVATION_MAX_ATTEMPTS = 5;
 
 @Injectable()
 export class AuthService {
@@ -73,12 +79,9 @@ export class AuthService {
             : false;
 
         const obj = { addedOrg, jwt: await this.jwt(create.users[0].user) };
-        await this._emailService.sendEmail(
-          body.email,
-          'Activate your account',
-          `Click <a href="${process.env.FRONTEND_URL}/auth/activate/${obj.jwt}">here</a> to activate your account`,
-          'top'
-        );
+        if (this._emailService.hasProvider()) {
+          await this.sendActivationCode(body.email);
+        }
         return obj;
       }
 
@@ -152,6 +155,7 @@ export class AuthService {
       provider
     );
     if (user) {
+      await this._userService.updateProviderProfile(user, providerUser);
       return user;
     }
 
@@ -185,6 +189,11 @@ export class AuthService {
     } catch (err) {
       // Don't fail registration if postRegistration fails
     }
+
+    await this._userService.updateProviderProfile(
+      create.users[0].user,
+      providerUser
+    );
 
     return create.users[0].user;
   }
@@ -276,16 +285,93 @@ export class AuthService {
       throw new Error('Account is already activated');
     }
 
-    const jwt = await this.jwt(user);
-
-    await this._emailService.sendEmail(
-      user.email,
-      'Activate your account',
-      `Click <a href="${process.env.FRONTEND_URL}/auth/activate/${jwt}">here</a> to activate your account`,
-      'top'
+    const cooldown = await ioRedis.set(
+      `activation_resend:${user.email.toLowerCase()}`,
+      '1',
+      'EX',
+      ACTIVATION_RESEND_COOLDOWN_SECONDS,
+      'NX'
     );
+    if (!cooldown) {
+      throw new Error('Wait a minute before requesting a new code');
+    }
+
+    try {
+      await this.sendActivationCode(user.email);
+    } catch (err) {
+      // A failed send must not block the user from asking again
+      await ioRedis.del(`activation_resend:${user.email.toLowerCase()}`);
+      throw err;
+    }
 
     return true;
+  }
+
+  async activateWithCode(email: string, code: string, tracking?: string) {
+    const invalid = 'This code is wrong or has expired. Request a new code.';
+    const user = await this._userService.getUserByEmail(email);
+    if (!user || user.activated) {
+      throw new Error(invalid);
+    }
+
+    const key = email.toLowerCase();
+    const codeKey = `activation_code:${key}`;
+    const attemptsKey = `activation_attempts:${key}`;
+    const stored = await ioRedis.get(codeKey);
+    if (!stored) {
+      throw new Error(invalid);
+    }
+
+    // The limit belongs to one code, so a burned code can only block the real
+    // user until they request a new one.
+    const attempts = await ioRedis.incr(attemptsKey);
+    if (attempts > ACTIVATION_MAX_ATTEMPTS) {
+      await ioRedis.del(codeKey);
+      throw new Error('Too many wrong codes. Request a new code.');
+    }
+
+    const hash = this.hashActivationCode(key, code);
+    if (!timingSafeEqual(Buffer.from(stored), Buffer.from(hash))) {
+      throw new Error(invalid);
+    }
+
+    await this._userService.activateUser(user.id);
+    await ioRedis.del(codeKey, attemptsKey);
+    this._track('register', user.email, tracking).catch((err) => {});
+    await NewsletterService.register(user.email);
+
+    return this.jwt({ ...user, activated: true });
+  }
+
+  private hashActivationCode(email: string, code: string) {
+    return createHash('sha256')
+      .update(`${email}:${code}:${process.env.JWT_SECRET}`)
+      .digest('hex');
+  }
+
+  private async sendActivationCode(email: string) {
+    const key = email.toLowerCase();
+    const code = randomInt(0, 1000000).toString().padStart(6, '0');
+
+    await ioRedis.set(
+      `activation_code:${key}`,
+      this.hashActivationCode(key, code),
+      'EX',
+      ACTIVATION_CODE_TTL_SECONDS
+    );
+    await ioRedis.set(
+      `activation_attempts:${key}`,
+      '0',
+      'EX',
+      ACTIVATION_CODE_TTL_SECONDS
+    );
+
+    await this._emailService.sendEmail(
+      email,
+      'Your Viralz verification code',
+      `Your verification code is <b style="font-size:24px;letter-spacing:4px">${code}</b><br /><br />It expires in 10 minutes. If you did not create a Viralz account, you can ignore this email.`,
+      'top'
+    );
   }
 
   oauthLink(provider: string, query?: any) {
@@ -321,6 +407,7 @@ export class AuthService {
       provider as Provider
     );
     if (checkExists) {
+      await this._userService.updateProviderProfile(checkExists, user);
       return { jwt: await this.jwt(checkExists) };
     }
 

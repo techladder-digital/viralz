@@ -1290,6 +1290,17 @@ export class PostsService {
       orgId,
       integrationId
     );
+
+    // No channels means no posting times, so the recursive search below would
+    // move to the next day forever without ever finding a slot.
+    if (!findTimes.length) {
+      return dayjs
+        .utc()
+        .add(1, 'hour')
+        .startOf('hour')
+        .format('YYYY-MM-DDTHH:mm:00');
+    }
+
     return this.findFreeDateTimeRecursive(
       orgId,
       findTimes,

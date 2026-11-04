@@ -46,6 +46,8 @@ export class GoogleProvider extends AuthProviderAbstract {
     return {
       id: data.id!,
       email: data.email!,
+      name: data.name || undefined,
+      picture: data.picture || undefined,
     };
   }
 }
