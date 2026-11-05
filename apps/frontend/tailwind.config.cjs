@@ -123,6 +123,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ['Helvetica Neue'],
+        display: ['var(--font-display)', 'Georgia', 'serif'],
       },
       animation: {
         fade: 'fadeOut 0.5s ease-in-out',

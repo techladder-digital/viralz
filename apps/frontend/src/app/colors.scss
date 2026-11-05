@@ -44,32 +44,32 @@
     --youtube-svg-border: #A0A0A0;
   }
   .light {
-    --new-back-drop: #431407;
-    --new-settings: #eceef1;
-    --new-sep: #d5d9dd;
-    --new-border: #eaecee;
-    --new-bgColor: #f0f2f4;
-    --new-bgColorInner: #ffffff;
-    --new-bgLineColor: #e7e9eb;
+    --new-back-drop: #0f3b3e;
+    --new-settings: #f6eddf;
+    --new-sep: #e2d6c3;
+    --new-border: #eadfce;
+    --new-bgColor: #fbf5ec;
+    --new-bgColorInner: #fffdf9;
+    --new-bgLineColor: #efe5d5;
     --new-textItemFocused: #c2410c;
-    --new-textItemBlur: #777b7f;
+    --new-textItemBlur: #66736f;
     --new-boxFocused: #ffedd5;
-    --new-textColor: 14 14 14;
-    --new-blockSeparator: #f2f2f4;
-    --new-btn-simple: #eceef1;
-    --new-btn-text: #0e0e0e;
+    --new-textColor: 15 59 62;
+    --new-blockSeparator: #f3eadc;
+    --new-btn-simple: #f3e9da;
+    --new-btn-text: #0f3b3e;
     --new-btn-primary: #f97316;
     --new-ai-btn: #ea580c;
-    --new-box-hover: #f4f6f8;
-    --new-table-border: #e7e9eb;
-    --new-table-header: #f5f7f9;
-    --new-table-text: #777b7f;
-    --new-table-text-focused: #ea580c;
-    --new-small-strips: #191818;
-    --new-big-strips: #f5f7f9;
-    --new-col-color: #eff1f3;
-    --new-menu-dots: #696868;
-    --new-menu-hover: #000;
+    --new-box-hover: #f8f0e3;
+    --new-table-border: #eadfce;
+    --new-table-header: #f8f0e3;
+    --new-table-text: #66736f;
+    --new-table-text-focused: #c2410c;
+    --new-small-strips: #0f3b3e;
+    --new-big-strips: #f8f0e3;
+    --new-col-color: #eee3d2;
+    --new-menu-dots: #66736f;
+    --new-menu-hover: #0f3b3e;
     --menu-shadow: -22px 83px 24px 0 rgba(55, 52, 75, 0),
       -14px 53px 22px 0 rgba(55, 52, 75, 0.01),
       -8px 30px 19px 0 rgba(55, 52, 75, 0.05),
@@ -168,10 +168,10 @@
     --color-modalCustom: #000000;
   }
   .light {
-    --color-primary: #f0f2f4;
-    --color-secondary: #fff;
-    --color-text: #000;
-    --color-third: white;
+    --color-primary: #fbf5ec;
+    --color-secondary: #fffdf9;
+    --color-text: #0f3b3e;
+    --color-third: #fffdf9;
     --color-forth: #f97316;
     --color-fifth: var(--new-bgLineColor);
     --color-sixth: var(--new-table-header);

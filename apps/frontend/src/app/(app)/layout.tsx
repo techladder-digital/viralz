@@ -6,7 +6,7 @@ import 'react-tooltip/dist/react-tooltip.css';
 import '@copilotkit/react-ui/styles.css';
 import LayoutContext from '@gitroom/frontend/components/layout/layout.context';
 import { ReactNode } from 'react';
-import { Plus_Jakarta_Sans } from 'next/font/google';
+import { Abril_Fatface, Plus_Jakarta_Sans } from 'next/font/google';
 import PlausibleProvider from 'next-plausible';
 import clsx from 'clsx';
 import { VariableContextComponent } from '@gitroom/react/helpers/variable.context';
@@ -31,9 +31,16 @@ const jakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
 });
 
+const displayFont = Abril_Fatface({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-display',
+});
+
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const cookieStore = await cookies();
   const language = cookieStore.get(cookieName)?.value || fallbackLng;
+  const mode = cookieStore.get('mode')?.value === 'dark' ? 'dark' : 'light';
   const Plausible = !!process.env.STRIPE_PUBLISHABLE_KEY
     ? PlausibleProvider
     : Fragment;
@@ -52,7 +59,12 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
       </head>
       <ChangeDirClient />
       <body
-        className={clsx(jakartaSans.className, 'dark text-primary !bg-primary')}
+        className={clsx(
+          jakartaSans.className,
+          displayFont.variable,
+          mode,
+          'text-primary !bg-primary'
+        )}
       >
         <VariableContextComponent
           storageProvider={

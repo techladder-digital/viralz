@@ -166,7 +166,7 @@ export const LayoutComponent = ({ children }: { children: ReactNode }) => {
                             <path d="M4 6h16M4 12h16M4 18h16" />
                           </svg>
                         </button>
-                        <div className="text-[24px] font-[600] flex flex-1 min-w-0 mobile:text-[18px] mobile:truncate">
+                        <div className="font-display text-[28px] flex flex-1 min-w-0 mobile:text-[18px] mobile:truncate">
                           <Title />
                         </div>
                         <div className="flex gap-[20px] text-textItemBlur items-center mobile:gap-[12px]">

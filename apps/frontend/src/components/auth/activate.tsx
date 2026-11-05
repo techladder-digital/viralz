@@ -106,7 +106,7 @@ export function Activate() {
   return (
     <FormProvider {...form}>
       <form className="flex flex-col flex-1" onSubmit={form.handleSubmit(onSubmit)}>
-        <h1 className="text-[40px] mobile:text-[30px] font-[500] -tracking-[0.8px] text-start">
+        <h1 className="font-display text-[44px] mobile:text-[32px] -tracking-[0.8px] text-start">
           {t('verify_your_email', 'Verify your email')}
         </h1>
         <p className="text-[14px] mt-[12px] mb-[24px]">

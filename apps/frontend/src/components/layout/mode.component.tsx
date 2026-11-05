@@ -7,11 +7,12 @@ import EventEmitter from 'events';
 export const modeEmitter = new EventEmitter();
 
 const ModeComponent = () => {
-  const [mode, setMode] = useCookie('mode', 'dark');
+  const [mode, setMode] = useCookie('mode', 'light');
 
   const changeMode = useCallback(() => {
-    modeEmitter.emit('mode', mode === 'dark' ? 'light' : 'dark');
-    setMode(mode === 'dark' ? 'light' : 'dark');
+    const next = mode === 'dark' ? 'light' : 'dark';
+    modeEmitter.emit('mode', next);
+    setMode(next, { days: 365 });
   }, [mode]);
 
   useEffect(() => {

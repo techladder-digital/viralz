@@ -55,7 +55,7 @@ export const CustomerModal: FC<{
           value={customer}
           onChange={setCustomer}
           classNames={{
-            label: 'text-white',
+            label: 'text-textColor',
           }}
           label={t('select_customer_label', 'Select Customer')}
           placeholder={t('start_typing', 'Start typing...')}

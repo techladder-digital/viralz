@@ -116,8 +116,8 @@ export default async function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen w-full bg-[#F97316] text-[#1F0E03] overflow-x-hidden">
-      <header className="bg-[#1F0E03] text-white">
+    <div className="min-h-screen w-full bg-[#FBF5EC] text-[#0F3B3E] overflow-x-hidden">
+      <header className="text-[#0F3B3E]">
         <div className="max-w-[1240px] mx-auto px-[32px] mobile:px-[16px] h-[72px] flex items-center justify-between gap-[12px]">
           <Link href="/" className={`rounded-[4px] ${focusRing}`}>
             <LogoTextComponent />
@@ -126,7 +126,7 @@ export default async function LandingPage() {
             {loggedIn ? (
               <Link
                 href={dashboard}
-                className={`h-[42px] px-[18px] flex items-center rounded-[10px] bg-white text-[#1F0E03] hover:bg-[#FFEDD5] ${focusRing}`}
+                className={`h-[42px] px-[18px] flex items-center rounded-full bg-[#F97316] text-white hover:bg-[#EA580C] ${focusRing}`}
               >
                 {t('landing_go_to_dashboard', 'Go to dashboard')}
               </Link>
@@ -140,7 +140,7 @@ export default async function LandingPage() {
                 </Link>
                 <Link
                   href="/auth"
-                  className={`h-[42px] px-[18px] flex items-center rounded-[10px] bg-white text-[#1F0E03] hover:bg-[#FFEDD5] ${focusRing}`}
+                  className={`h-[42px] px-[18px] flex items-center rounded-full bg-[#F97316] text-white hover:bg-[#EA580C] ${focusRing}`}
                 >
                   {t('sign_up', 'Sign Up')}
                 </Link>
@@ -155,7 +155,7 @@ export default async function LandingPage() {
 
         <section
           aria-label={t('landing_platforms', 'Platforms you can post to')}
-          className="mt-[56px] mobile:mt-[40px] bg-[#FFF7ED] overflow-hidden"
+          className="mt-[56px] mobile:mt-[40px] border-y border-[#EADFCE] overflow-hidden"
         >
           <div className="flex w-max landing-marquee">
             <PlatformRow />
@@ -163,19 +163,19 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        <div className="bg-[#FFF7ED]">
+        <div>
           <section className="max-w-[1240px] mx-auto px-[32px] mobile:px-[16px] pt-[64px] mobile:pt-[44px]">
-            <h2 className="text-[56px] mobile:text-[36px] leading-[1.05] -tracking-[0.03em] font-[600]">
+            <h2 className="font-display text-[56px] mobile:text-[36px] leading-[1.08]">
               {t('landing_how_it_works', 'Three steps, then it runs itself')}
             </h2>
             <ol className="grid grid-cols-3 mobile:grid-cols-1 gap-[40px] mobile:gap-[28px] mt-[40px]">
               {steps.map((step, index) => (
                 <li key={step.title} className="flex flex-col gap-[10px]">
-                  <span className="text-[72px] leading-none font-[600] text-[#EA580C]">
+                  <span className="font-display text-[72px] leading-none text-[#F97316]">
                     {index + 1}
                   </span>
                   <h3 className="text-[23px] font-[600]">{step.title}</h3>
-                  <p className="text-[17px] leading-[1.5] font-[500] text-[#5C3A21] max-w-[360px]">
+                  <p className="text-[17px] leading-[1.5] font-[500] text-[#55696A] max-w-[360px]">
                     {step.text}
                   </p>
                 </li>
@@ -184,17 +184,17 @@ export default async function LandingPage() {
           </section>
 
           <section className="max-w-[1240px] mx-auto px-[32px] mobile:px-[16px] py-[88px] mobile:py-[56px] grid grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] mobile:grid-cols-1 gap-[48px] mobile:gap-[24px]">
-            <h2 className="text-[56px] mobile:text-[36px] leading-[1.05] -tracking-[0.03em] font-[600]">
+            <h2 className="font-display text-[56px] mobile:text-[36px] leading-[1.08]">
               {t('landing_features', 'Everything in one place')}
             </h2>
             <ul className="flex flex-col">
               {features.map((feature) => (
                 <li
                   key={feature.title}
-                  className="py-[22px] border-t-2 border-[#1F0E03] last:border-b-2"
+                  className="py-[22px] border-t border-[#E2D6C3] last:border-b"
                 >
                   <h3 className="text-[23px] font-[600]">{feature.title}</h3>
-                  <p className="text-[17px] leading-[1.5] font-[500] text-[#5C3A21] mt-[4px]">
+                  <p className="text-[17px] leading-[1.5] font-[500] text-[#55696A] mt-[4px]">
                     {feature.text}
                   </p>
                 </li>
@@ -204,12 +204,12 @@ export default async function LandingPage() {
         </div>
 
         <section className="max-w-[1240px] mx-auto px-[32px] mobile:px-[16px] py-[96px] mobile:py-[64px]">
-          <h2 className="text-[92px] tablet:text-[68px] mobile:!text-[46px] leading-[0.98] -tracking-[0.04em] font-[600] max-w-[960px]">
+          <h2 className="font-display text-[84px] tablet:text-[64px] mobile:!text-[44px] leading-[1.04] max-w-[900px]">
             {t('landing_cta', 'Your next post is one click away.')}
           </h2>
           <Link
             href={loggedIn ? dashboard : '/auth'}
-            className={`inline-flex h-[62px] px-[34px] mt-[36px] items-center rounded-[14px] bg-[#1F0E03] text-white text-[18px] font-[600] transition-transform hover:-translate-y-[2px] motion-reduce:transform-none ${focusRing}`}
+            className={`inline-flex h-[62px] px-[34px] mt-[36px] items-center rounded-full bg-[#F97316] text-white hover:bg-[#EA580C] text-[18px] font-[600] transition-transform hover:-translate-y-[2px] motion-reduce:transform-none ${focusRing}`}
           >
             {loggedIn
               ? t('landing_go_to_dashboard', 'Go to dashboard')
@@ -218,7 +218,7 @@ export default async function LandingPage() {
         </section>
       </main>
 
-      <footer className="bg-[#1F0E03] text-white/80">
+      <footer className="bg-[#0F3B3E] text-[#FBF5EC]/80">
         <div className="max-w-[1240px] mx-auto px-[32px] mobile:px-[16px] py-[28px] flex flex-wrap items-center justify-between gap-[12px] text-[14px] font-[500]">
           <span>Viralz</span>
           <nav className="flex gap-[20px]">

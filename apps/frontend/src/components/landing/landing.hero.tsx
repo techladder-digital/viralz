@@ -85,14 +85,18 @@ export const LandingHero: FC<{ loggedIn: boolean; dashboard: string }> = ({
 
   return (
     <>
-      <section className="max-w-[1240px] mx-auto px-[32px] mobile:px-[16px] pt-[56px] mobile:pt-[36px] grid grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] mobile:grid-cols-1 gap-[56px] mobile:gap-[36px] items-center">
+      <section className="max-w-[1280px] mx-auto px-[32px] mobile:px-[16px] pt-[24px] mobile:pt-[12px]">
+        <div className="rounded-[36px] mobile:rounded-[24px] bg-gradient-to-br from-[#FFF3E2] via-[#FFFDF9] to-[#F8EEDC] border border-[#EADFCE] shadow-[0_18px_50px_rgba(15,59,62,0.08)] p-[56px] tablet:p-[36px] mobile:p-[20px] grid grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] mobile:grid-cols-1 gap-[56px] mobile:gap-[28px] items-center">
         <div>
-          <h1 className="text-[74px] tablet:text-[58px] mobile:!text-[52px] leading-[1] -tracking-[0.04em] font-[600]">
+          <div className="text-[12px] font-[700] tracking-[0.18em] uppercase text-[#EA580C] mb-[18px]">
+            {t('landing_eyebrow', 'Social media scheduler')}
+          </div>
+          <h1 className="font-display text-[76px] tablet:text-[58px] mobile:!text-[46px] leading-[1.04] text-[#0F3B3E]">
             {t('landing_headline_1', 'Write once.')}
             <br />
             {t('landing_headline_2', 'Post everywhere.')}
           </h1>
-          <p className="text-[21px] mobile:text-[17px] leading-[1.45] font-[500] max-w-[520px] mt-[24px]">
+          <p className="text-[19px] mobile:text-[17px] leading-[1.55] font-[500] text-[#55696A] max-w-[500px] mt-[24px]">
             {t(
               'landing_description',
               'Plan your week in one calendar. Viralz publishes to YouTube, Instagram, Facebook and more at the time you pick, even when your computer is off.'
@@ -101,7 +105,7 @@ export const LandingHero: FC<{ loggedIn: boolean; dashboard: string }> = ({
           <div className="flex flex-wrap items-center gap-[12px] mt-[32px]">
             <Link
               href={loggedIn ? dashboard : '/auth'}
-              className={`h-[58px] px-[30px] flex items-center rounded-[14px] bg-[#1F0E03] text-white text-[17px] font-[600] transition-transform hover:-translate-y-[2px] motion-reduce:transform-none ${focusRing}`}
+              className={`h-[54px] px-[28px] flex items-center rounded-full bg-[#F97316] text-white hover:bg-[#EA580C] text-[16px] font-[600] transition-transform hover:-translate-y-[2px] motion-reduce:transform-none ${focusRing}`}
             >
               {loggedIn
                 ? t('landing_go_to_dashboard', 'Go to dashboard')
@@ -110,7 +114,7 @@ export const LandingHero: FC<{ loggedIn: boolean; dashboard: string }> = ({
             {!loggedIn && (
               <Link
                 href="/auth/login"
-                className={`h-[58px] px-[16px] flex items-center rounded-[14px] text-[17px] font-[600] underline underline-offset-4 ${focusRing}`}
+                className={`h-[54px] px-[24px] flex items-center rounded-full bg-white text-[#0F3B3E] text-[16px] font-[600] shadow-[0_2px_12px_rgba(15,59,62,0.08)] ${focusRing}`}
               >
                 {t('landing_have_account', 'I already have an account')}
               </Link>
@@ -118,12 +122,12 @@ export const LandingHero: FC<{ loggedIn: boolean; dashboard: string }> = ({
           </div>
         </div>
 
-        <div className="bg-[#FFF7ED] rounded-[24px] p-[24px] mobile:p-[18px] shadow-[12px_12px_0_#1F0E03] mobile:shadow-[6px_6px_0_#1F0E03]">
+        <div className="bg-[#0F3B3E] text-[#FBF5EC] rounded-[28px] p-[28px] mobile:p-[18px] shadow-[0_24px_60px_rgba(15,59,62,0.28)]">
           <div className="flex items-baseline justify-between gap-[12px]">
-            <h2 className="text-[21px] font-[600]">
+            <h2 className="font-display text-[30px] leading-none">
               {t('landing_demo_title', 'Try it here')}
             </h2>
-            <span className="text-[13px] font-[500] text-[#7C4A24]">
+            <span className="text-[13px] font-[500] text-[#FBF5EC]/70">
               {t('landing_demo_note', 'Just a demo. Nothing gets posted.')}
             </span>
           </div>
@@ -137,7 +141,7 @@ export const LandingHero: FC<{ loggedIn: boolean; dashboard: string }> = ({
             rows={2}
             onChange={(e) => setText(e.target.value)}
             placeholder={t('landing_demo_placeholder', 'Write your post')}
-            className="w-full mt-[12px] p-[14px] rounded-[12px] bg-white border-2 border-[#1F0E03] text-[#1F0E03] text-[17px] font-[500] leading-[1.35] resize-none outline-none focus:border-[#EA580C]"
+            className="w-full mt-[12px] p-[14px] rounded-[14px] bg-[#FFFDF9] border-2 border-transparent text-[#0F3B3E] text-[17px] font-[500] leading-[1.35] resize-none outline-none focus:border-[#EA580C]"
           />
           <div className="text-[14px] font-[600] mt-[14px] mb-[8px]">
             {t('landing_demo_channels', 'Post to')}
@@ -155,8 +159,8 @@ export const LandingHero: FC<{ loggedIn: boolean; dashboard: string }> = ({
                   'w-[46px] h-[46px] flex items-center justify-center rounded-[12px] border-2 transition-all',
                   focusRing,
                   selected.includes(id)
-                    ? 'border-[#1F0E03] bg-white'
-                    : 'border-transparent bg-[#FFEDD5] opacity-50 grayscale'
+                    ? 'border-[#F97316] bg-white'
+                    : 'border-transparent bg-white/70 opacity-60 grayscale'
                 )}
               >
                 <img
@@ -183,8 +187,8 @@ export const LandingHero: FC<{ loggedIn: boolean; dashboard: string }> = ({
                   'h-[38px] rounded-[10px] text-[13px] font-[600]',
                   focusRing,
                   day === d
-                    ? 'bg-[#1F0E03] text-white'
-                    : 'bg-[#FFEDD5] text-[#1F0E03] hover:bg-[#FED7AA]'
+                    ? 'bg-[#F97316] text-white'
+                    : 'bg-white/10 text-[#FBF5EC] hover:bg-white/20'
                 )}
               >
                 {t(`landing_day_${d.toLowerCase()}`, d)}
@@ -195,42 +199,43 @@ export const LandingHero: FC<{ loggedIn: boolean; dashboard: string }> = ({
             type="button"
             onClick={schedule}
             disabled={!canSchedule}
-            className={`w-full h-[52px] mt-[16px] rounded-[12px] bg-[#EA580C] text-white text-[16px] font-[600] hover:bg-[#C2410C] disabled:opacity-50 disabled:cursor-not-allowed ${focusRing}`}
+            className={`w-full h-[52px] mt-[16px] rounded-full bg-[#F97316] text-white text-[16px] font-[600] hover:bg-[#EA580C] disabled:opacity-50 disabled:cursor-not-allowed ${focusRing}`}
           >
             {t('add_to_calendar', 'Add to calendar')}
           </button>
           <p
             aria-live="polite"
-            className="min-h-[20px] mt-[8px] text-[14px] font-[600] text-[#9A3412]"
+            className="min-h-[20px] mt-[8px] text-[14px] font-[600] text-[#FDBA74]"
           >
             {status}
           </p>
         </div>
+        </div>
       </section>
 
       <div className="max-w-[1240px] mx-auto px-[32px] mobile:px-[16px] mt-[56px] mobile:mt-[40px]">
-        <div className="bg-[#1F0E03] rounded-[24px] p-[12px] overflow-x-auto">
+        <div className="bg-[#FFFDF9] border border-[#EADFCE] rounded-[28px] p-[12px] overflow-x-auto">
           <div className="grid grid-cols-7 gap-[6px] min-w-[860px]">
             {days.map((d) => (
               <div key={d} className="flex flex-col gap-[6px] min-w-0">
-                <div className="text-white/70 text-[14px] font-[600] px-[10px] py-[8px]">
+                <div className="text-[#55696A] text-[14px] font-[600] px-[10px] py-[8px]">
                   {t(`landing_day_${d.toLowerCase()}`, d)}
                 </div>
-                <div className="flex flex-col gap-[6px] min-h-[170px] rounded-[12px] bg-white/[0.06] p-[6px]">
+                <div className="flex flex-col gap-[6px] min-h-[170px] rounded-[14px] bg-[#F8F0E3] p-[6px]">
                   {week[d].map((post) => (
                     <div
                       key={post.id}
                       className={clsx(
                         'rounded-[10px] p-[10px] flex flex-col gap-[8px]',
                         post.added
-                          ? 'bg-[#F97316] text-[#1F0E03] landing-pop'
-                          : 'bg-[#FFF7ED] text-[#1F0E03]'
+                          ? 'bg-[#F97316] text-white landing-pop'
+                          : 'bg-white text-[#0F3B3E] shadow-[0_2px_8px_rgba(15,59,62,0.07)]'
                       )}
                     >
                       <div
                         className={clsx(
                           'text-[12px] font-[600]',
-                          !post.added && 'text-[#9A3412]'
+                          !post.added && 'text-[#C2410C]'
                         )}
                       >
                         {post.time}
